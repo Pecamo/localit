@@ -9,8 +9,7 @@ $(function () {
 
 function display_post(post) {
 	var s = 
-	'<div id="post'+post.id+'" class="post">' +
-		'<div class="panel panel-default">' +
+		'<div id="post'+post.id+'" class="panel panel-default post">' +
 			'<div class="panel-heading">' +
 				'<div>' + post.ups + '</div>' +
 				'<h4 class="panel-title">' +
@@ -24,8 +23,7 @@ function display_post(post) {
 					post.content +
 				'</div>' +
 			'</div>' +
-		'</div>' +
-	'</div>'
+		'</div>'
 
 	$('.posts_container').append(s);
 }
