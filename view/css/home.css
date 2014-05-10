@@ -18,8 +18,6 @@ div {
 	display: block;
 }
 
-#sidebar {
-	height: 300px;
-	border-radius: 6px;
-	background-color: #333333;
+.ups {
+	margin-right: 10px;
 }
