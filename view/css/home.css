@@ -20,4 +20,9 @@ div {
 
 .ups {
 	margin-right: 10px;
+	text-align: center;
+}
+
+.glyphicon-arrow-up {
+	cursor: pointer;
 }
