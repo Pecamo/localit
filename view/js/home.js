@@ -8,7 +8,7 @@ $(function () {
 
 	for(var i = 0; i < 3; ++i) {
 		var post = new Array()
-		post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content"}
+		post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"}
 		display_post(post);
 	}
 })
@@ -47,22 +47,31 @@ function displayErrorMessage(error) {
  * @param  {Array} post Post
  */
 function displayPost(post) {
+	// todo
+	var locDiff = "0 km"
+	var lastPosted = "0 s"
+	
 	var s = 
-		'<div id="post'+post.id+'" class="panel panel-default post">' +
+		'<div id="post' + post.id + '" class="panel panel-default post">' +
 			'<div class="panel-heading">' +
-				'<div class="pull-left ups">' + 
-					post.ups + 
-				'</div>' +
-				'<div>' +
-					'<h4 class="panel-title">' +
-						'<a data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.id+'">' +
-								post.title +
-						'</a>' +
-					'</h4>' +
+				'<div class="post_header">' +
+					'<div class="ups pull-left">' + 
+						'<div onclick="upvote()" class="glyphicon glyphicon-arrow-up"></div>' +
+						'<div>' + post.ups + '</div>' +
+					'</div>' +
+					'<div class=" post_first_line panel-title">' +
+							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.id+'">' +
+									post.title +
+							'</a>' +
+						'<span class="small_text"> at '+ post.location + ' (~' + locDiff + ')</span>' +
+					'</div>' +
+					'<span class="post_second_line small_text">' +
+						'by ' + post.author + " - " + lastPosted + " ago" +
+					'</span>' +
 				'</div>' +
 				
 			'</div>' +
-			'<div id="collapse'+post.id+'" class="panel-collapse collapse">' +
+			'<div id="collapse' + post.id + '" class="panel-collapse collapse">' +
 				'<div class="panel-body">' +
 					post.content +
 				'</div>' +
@@ -70,4 +79,9 @@ function displayPost(post) {
 		'</div>'
 
 	$('.posts_container').append(s);
+}
+
+// todo
+function upvote() {
+	alert("Fnupvoted !")
 }

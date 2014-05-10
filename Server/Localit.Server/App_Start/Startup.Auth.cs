@@ -27,11 +27,12 @@ namespace Localit.Server
             app.UseCookieAuthentication( new CookieAuthenticationOptions() );
             app.UseExternalSignInCookie( DefaultAuthenticationTypes.ExternalCookie );
 
+            const string TokenPath = "/api/Account/GetToken";
             // Configure the application for OAuth based flow
             PublicClientId = "self";
             OAuthOptions = new OAuthAuthorizationServerOptions
             {
-                TokenEndpointPath = new PathString( "/Token" ),
+                TokenEndpointPath = new PathString( TokenPath ),
                 Provider = new ApplicationOAuthProvider( PublicClientId ),
                 AuthorizeEndpointPath = new PathString( "/api/Account/ExternalLogin" ),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays( 14 ),
@@ -41,27 +42,27 @@ namespace Localit.Server
             // Enable the application to use bearer tokens to authenticate users
             app.UseOAuthBearerTokens( OAuthOptions );
 
-            //app.Use( async ( context, next ) =>
-            //{
-            //    IOwinRequest req = context.Request;
-            //    IOwinResponse res = context.Response;
-            //    if ( req.Path.StartsWithSegments( new PathString( "/Token" ) ) )
-            //    {
-            //        var origin = req.Headers.Get( "Origin" );
-            //        if ( !string.IsNullOrEmpty( origin ) )
-            //        {
-            //            res.Headers.Set( "Access-Control-Allow-Origin", origin );
-            //        }
-            //        if ( req.Method == "OPTIONS" )
-            //        {
-            //            res.StatusCode = 200;
-            //            res.Headers.AppendCommaSeparatedValues( "Access-Control-Allow-Methods", "GET", "POST" );
-            //            res.Headers.AppendCommaSeparatedValues( "Access-Control-Allow-Headers", "authorization", "content-type" );
-            //            return;
-            //        }
-            //    }
-            //    await next();
-            //} );
+            app.Use( async ( context, next ) =>
+            {
+                IOwinRequest req = context.Request;
+                IOwinResponse res = context.Response;
+                if ( req.Path.StartsWithSegments( new PathString( "/api/Account/GetToken" ) ) )
+                {
+                    var origin = req.Headers.Get( "Origin" );
+                    if ( !string.IsNullOrEmpty( origin ) )
+                    {
+                        res.Headers.Set( "Access-Control-Allow-Origin", origin );
+                    }
+                    if ( req.Method == "OPTIONS" )
+                    {
+                        res.StatusCode = 200;
+                        res.Headers.AppendCommaSeparatedValues( "Access-Control-Allow-Methods", "GET", "POST" );
+                        res.Headers.AppendCommaSeparatedValues( "Access-Control-Allow-Headers", "authorization", "content-type" );
+                        return;
+                    }
+                }
+                await next();
+            } );
 
             // Uncomment the following lines to enable logging in with third party login providers
             //app.UseMicrosoftAccountAuthentication(
@@ -76,7 +77,7 @@ namespace Localit.Server
             //    appId: "",
             //    appSecret: "");
 
-            //app.UseGoogleAuthentication();
+            app.UseGoogleAuthentication();
         }
     }
 }

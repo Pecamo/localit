@@ -1,9 +1,10 @@
-﻿namespace Localit.Server.Models
+﻿
+namespace Localit.Server.Models
 {
     public class Location
     {
-        public float Longitude { get; set; }
-        public float Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
         public string DisplayName { get; set; }
     }
 }
