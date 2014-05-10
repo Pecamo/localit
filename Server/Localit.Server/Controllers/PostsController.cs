@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
@@ -15,10 +16,9 @@ namespace Localit.Server.Controllers
 
         [HttpGet]
         [Route( "" )]
-        public /*ICollection<Post>*/ string GetPostsNear( [FromUri] float latitude, [FromUri] float longitude )
+        public IEnumerable<Post> GetPostsNear( [FromUri] double latitude, [FromUri] double longitude )
         {
-            Debug.WriteLine( "GET /posts: latitude={0}, longitude={1}", latitude, longitude );
-            return "You requested posts near " + latitude + " / " + longitude + ". What am I supposed to do?";
+            return _context.Posts.OrderBy( p => Math.Pow( p.Location.Latitude - latitude, 2 ) + Math.Pow( p.Location.Longitude - longitude, 2 ) ).Take( 10 );
         }
 
         [HttpGet]
@@ -36,7 +36,7 @@ namespace Localit.Server.Controllers
 
         [HttpPost]
         [Route( "add" )]
-        public Post CreatePost( [FromUri] string title, [FromUri] Location location )
+        public Post CreatePost( [FromBody]PostCreationInfo info )
         {
             throw new HttpResponseException( HttpStatusCode.NotImplemented );
         }
