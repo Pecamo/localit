@@ -11,25 +11,13 @@ html, body {
 }
 
 body {
-	padding-top: 50px;
+	padding-top: 100px;
 }
 
 div {
 	display: block;
 }
 
-#header {
-	
-}
-
-#posts_container {
-	
-}
-
-#post {
-	background-color: blue;
-}
-
-#footer {
-	
+.post {
+	padding-bottom: 20px;
 }
