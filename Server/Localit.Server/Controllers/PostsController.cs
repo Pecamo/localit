@@ -11,7 +11,7 @@ namespace Localit.Server.Controllers
     [RoutePrefix( "api/posts" )]
     public class PostsController : ApiController
     {
-        private readonly ApplicationContext _context = new ApplicationContext();
+        private readonly ApplicationDbContext _context = new ApplicationDbContext();
 
         [HttpGet]
         [Route( "" )]
