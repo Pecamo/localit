@@ -1,0 +1,1 @@
+$('#posts_container').append('<div class="post">Test<div>')
