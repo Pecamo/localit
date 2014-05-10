@@ -18,15 +18,6 @@ div {
 	display: block;
 }
 
-#header {
-	border:
-}
-
-#main_content {
-	padding-left: 50px;
-	padding-right: 50px;
-}
-
-#footer {
-	
+.post {
+	padding-bottom: 20px;
 }
