@@ -6,7 +6,7 @@
  * - failCallback : function called in case the communication fails
  */
 function getPosts(location, successCallback, failCallback) {
-	httpGET("example.php/" + location, successCallback, failCallback);
+	httpGET("example.php/posts/" + location, successCallback, failCallback);
 }
 
 /*
@@ -17,7 +17,7 @@ function getPosts(location, successCallback, failCallback) {
  * - failCallback : function called in case the communication fails
  */
 function getPost(id, successCallback, failCallback) {
-	httpGET("example.php/id", successCallback, failCallback);
+	httpGET("example.php/psots/id", successCallback, failCallback);
 }
 
 /*
@@ -28,7 +28,7 @@ function getPost(id, successCallback, failCallback) {
  * - failCallback : function called in case the communication fails
  */
 function addPost(post, successCallback, failCallback) {
-	httpPOST("test.html/add", post, successCallback, failCallback);
+	httpPOST("test.html/posts/add", post, successCallback, failCallback);
 }
 
 /*
@@ -39,7 +39,7 @@ function addPost(post, successCallback, failCallback) {
  * - failCallback : function called in case the communication fails
  */
 function updatePost(post, successCallback, failCallback) {
-	httpPOST("test.html/update", post, successCallback, failCallback);
+	httpPOST("test.html/posts/update", post, successCallback, failCallback);
 }
 
 /*
@@ -54,7 +54,7 @@ function interestedInPost(postID, userID, successCallback, failCallback) {
 		postID : postID,
 		userID : userID
 	};
-	httpPOST("test.html/interestedIn", data, successCallback, failCallback);
+	httpPOST("test.html/posts/interestedIn", data, successCallback, failCallback);
 }
 
 /*
