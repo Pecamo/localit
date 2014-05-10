@@ -3,12 +3,17 @@ var posts_root = api_root + "posts"
 /*
  * Gets all the posts near the location of the client.
  * Parameters :
- * - Lattitude/longitude : Lattitude/longitude of the client
- * - successCallback : function called in case of a success, must take an array of JSONs as argument 
+ * - latitude/longitude : Latitude/longitude of the client
+ * - range : Maximum wanted distance of messages
+ * - successCallback : function called in case of a success, must take an array of objects as argument 
  * - failCallback : function called in case the communication fails
  */
-function getPosts(lattitude, longitude, successCallback, failCallback) {
-	httpGET(posts_root + "?latitude=" + lattitude + "&longitude=" + longitude, successCallback, failCallback);
+function getPosts(latitude, longitude, range, successCallback, failCallback) {
+	rangeString = "";
+	if (range != 0) {
+		rangeString = "&range=" + range;
+	}
+	httpGET(posts_root + "?latitude=" + latitude + "&longitude=" + longitude + rangeString, successCallback, failCallback);
 }
 
 /*
