@@ -26,3 +26,11 @@ div {
 .glyphicon-arrow-up {
 	cursor: pointer;
 }
+
+.post_title {
+	font-size: 20px;
+}
+
+.small_text {
+	font-size: 13px;
+}
