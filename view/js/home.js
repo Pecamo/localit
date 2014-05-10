@@ -9,21 +9,24 @@ $(function () {
 
 function display_post(post) {
 	$('#posts_container').append(
-		'<div id="post'+ post.id +'" class="container post">' +
-			'<div class="post_up">'+ post.ups +'</div>' +
-			'<div class="post_title">'+ post.title +'</div>' +
-			'<div class="post_content"></div>'+
+		'<div id="post'+ post.id +'" class="row">' +
+			'<div class="col-md-1 post_up">'+ post.ups +'</div>' +
+			'<div class="post_title">'+ 
+				'<div class="panel-group" id="accordion">' +
+				  '<div class="panel panel-default">' +
+					'<div class="panel-heading">' +
+					  '<h4 class="panel-title">' +
+						'<a data-toggle="collapse" data-parent="#accordion" href="#collapse'+ post.id +'">' + post.title + '</a>' +
+					  '</h4>' +
+					'</div>' +
+					'<div id="collapse'+ post.id +'" class="panel-collapse collapse">' +
+					  '<div class="panel-body">' +
+						'Marrant contenu' +
+					  '</div>' +
+					'</div>' +
+				  '</div>' +
+				'</div>' +
+			'</div>' +
 		'</div>'
 	)
-	
-	$('#post'+post.id+'> .post_title').on("click", function () {
-		if(!post.open) {
-			$('#post'+ post.id + '> .post_content').append('<div>'+ post.content +'</div>')
-			post.open = true;
-		}
-		else {
-			$('#post'+ post.id + '> .post_content').empty()
-			post.open = false;
-		}
-	})
 }
