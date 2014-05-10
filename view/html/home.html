@@ -17,13 +17,27 @@
 </head>
 <body>
 	<div id="header" class="navbar navbar-inverse navbar-fixed-top">
-		
+		<div class="container">
+			<a class="navbar-brand" href="#">localit</a>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+				<ul class="nav navbar-nav">
+				<li class="active"><a href="#">Local</a></li>
+				<li><a href="#">Regional</a></li>
+				<li><a href="#">Global</a></li>
+				</ul>
+				<button type="button" class="btn btn-default navbar-btn navbar-right">Sign in</button>
+	        </div>
+		</div>
 	</div>
 	
 	<div id="wrapper" class="container">
 		<div id="top_text"></div>
-		<div id="main_content" class="container">
-			<div class="posts_container panel-group" id="accordion">
+		<div id="main_content" class="row">
+			<div class="col-sm-8 posts_container panel-group" id="accordion">
+			</div>
+			<div class="col-sm-1">
+			</div>
+			<div class="col-sm-3" id="sidebar">
 			</div>
 		</div>
     </div>
