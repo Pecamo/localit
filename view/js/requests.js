@@ -1,12 +1,14 @@
+var api_root = "http://128.179.130.155:8888/api/"
+var posts_root = api_root + "posts"
 /*
  * Gets all the posts near the location of the client.
  * Parameters :
- * - Location : location of the client
+ * - Lattitude/longitude : Lattitude/longitude of the client
  * - successCallback : function called in case of a success, must take an array of JSONs as argument 
  * - failCallback : function called in case the communication fails
  */
-function getPosts(location, successCallback, failCallback) {
-	httpGET("example.php/posts/" + location, successCallback, failCallback);
+function getPosts(lattitude, longitude, successCallback, failCallback) {
+	httpGET(posts_root + "?latitude=" + lattitude + "&longitude=" + longitude, successCallback, failCallback);
 }
 
 /*
@@ -17,7 +19,7 @@ function getPosts(location, successCallback, failCallback) {
  * - failCallback : function called in case the communication fails
  */
 function getPost(id, successCallback, failCallback) {
-	httpGET("example.php/psots/id", successCallback, failCallback);
+	httpGET(posts_root + "/" + id, successCallback, failCallback);
 }
 
 /*
@@ -28,7 +30,7 @@ function getPost(id, successCallback, failCallback) {
  * - failCallback : function called in case the communication fails
  */
 function addPost(post, successCallback, failCallback) {
-	httpPOST("test.html/posts/add", post, successCallback, failCallback);
+	httpPOST(posts_root + "/add", post, successCallback, failCallback);
 }
 
 /*
@@ -39,7 +41,7 @@ function addPost(post, successCallback, failCallback) {
  * - failCallback : function called in case the communication fails
  */
 function updatePost(post, successCallback, failCallback) {
-	httpPOST("test.html/posts/update", post, successCallback, failCallback);
+	httpPOST(posts_root + "/update", post, successCallback, failCallback);
 }
 
 /*
@@ -54,7 +56,7 @@ function interestedInPost(postID, userID, successCallback, failCallback) {
 		postID : postID,
 		userID : userID
 	};
-	httpPOST("test.html/posts/interestedIn", data, successCallback, failCallback);
+	httpPOST(posts_root + "/upvote", data, successCallback, failCallback);
 }
 
 /*
@@ -92,5 +94,4 @@ function httpPOST(url, data, successCallback, failCallback) {
 		.fail(function() {
 			failCallback();
 		});
-}
 }
