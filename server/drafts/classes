@@ -1,0 +1,6 @@
+public class User {
+	public int internalID {get; set;}
+	public int googleUserID {get; set;}
+	public String displayName {get; set;}
+	public String displayAvatarLink {get; set;}
+}
