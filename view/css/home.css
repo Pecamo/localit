@@ -11,7 +11,7 @@ html, body {
 }
 
 body {
-	padding-top: 50px;
+	padding-top: 100px;
 }
 
 div {
@@ -19,7 +19,12 @@ div {
 }
 
 #header {
-	
+	border:
+}
+
+#main_content {
+	padding-left: 50px;
+	padding-right: 50px;
 }
 
 #posts_container {
