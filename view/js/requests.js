@@ -76,8 +76,8 @@ function httpGET(url, successCallback, failCallback) {
 		.done(function(response) {
 			successCallback(response);
 		})
-		.fail(function() {
-			failCallback();
+		.fail(function(response) {
+			failCallback(response);
 		});
 }
 
@@ -93,10 +93,10 @@ function httpPOST(url, data, successCallback, failCallback) {
 		type : 'POST',
 		data : data
 	})
-		.done(function() {
-			successCallback();
+		.done(function(response) {
+			successCallback(response);
 		})
-		.fail(function() {
-			failCallback();
+		.fail(function(response) {
+			failCallback(response);
 		});
 }

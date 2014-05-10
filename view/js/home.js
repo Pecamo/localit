@@ -9,7 +9,7 @@ $(function () {
 	for(var i = 0; i < 3; ++i) {
 		var post = new Array()
 		post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"}
-		display_post(post);
+		displayPost(post);
 	}
 })
 
@@ -21,7 +21,14 @@ $(function () {
  * @return {Array} Messages in decreasing relevance order
  */
 function loadHome(latitude, longitude, range) {
-	getPosts(latitude, longitude, range, displayPosts(posts), displayErrorMessage(error));
+	getPosts(latitude, longitude, range,
+		function(posts) {
+			displayPosts(posts);
+		},
+		function(error) {
+			alert(error);
+			displayErrorMessage(error);
+		});
 }
 
 /**
@@ -29,6 +36,7 @@ function loadHome(latitude, longitude, range) {
  * @param  {Array} posts Posts
  */
 function displayPosts(posts) {
+	console.log("Displaying posts...");
 	for(var i = 0; i < posts.length; i++){
 		displayPost(posts[i]);
 	}
@@ -56,7 +64,7 @@ function displayPost(post) {
 			'<div class="panel-heading">' +
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
-						'<div onclick="upvote()" class="glyphicon glyphicon-arrow-up"></div>' +
+						'<div onclick="upvote()" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
 						'<div>' + post.ups + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
@@ -81,7 +89,28 @@ function displayPost(post) {
 	$('.posts_container').append(s);
 }
 
-// todo
-function upvote() {
-	alert("Fnupvoted !")
+/**
+ * Upvotes a post
+ * @param  {int} postId id of the post
+ * @param  {int} userId if of the upvoting user
+ */
+function upvote(postId, userId) {
+	interestedInPost(postId, userId,
+		function() {
+			alert("Fnupvoted !");
+			showUpVote(postId);
+		}),
+		function(response) {
+			displayErrorMessage(response);
+		}
+}
+
+/**
+ * Updates the local display with the upvote
+ * @param  {int} postId id of the message to display the upvote
+ */
+function showUpVote(postId) {
+	arrow = $("#post"+postId+" .upvote-icon")[0];
+	arrow.removeClass("glyphicon-arrow-up");
+	arrow.addClass("glyphicon-ok");
 }
