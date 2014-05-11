@@ -6,7 +6,7 @@ namespace Localit.Server.Models
     {
         public ApplicationDbContext() : base( "name=Localit" ) { }
 
-        public DbSet<Post> Posts { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Post> Posts { get; set; }
     }
 }

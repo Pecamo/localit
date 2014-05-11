@@ -22,7 +22,6 @@ namespace Localit.Server
                 {
                     context.Posts.Add( new Post
                     {
-                        PostId = n,
                         Title = "Random #" + n,
                         Score = n,
                         Location = new Location { DisplayName = "Location #" + n, Latitude = random.NextDouble() * 180 - 90, Longitude = random.NextDouble() * 360 - 180 }
@@ -31,7 +30,6 @@ namespace Localit.Server
 
                 context.Posts.Add( new Post
                 {
-                    PostId = 1001,
                     Title = "Another test",
                     Score = 10000,
                     Location = new Location { DisplayName = "Somewhere over the rainbow", Latitude = 80, Longitude = 20 }
@@ -39,7 +37,6 @@ namespace Localit.Server
 
                 context.Posts.Add( new Post
                 {
-                    PostId = 1002,
                     Title = "Come help Santa!",
                     Score = 99,
                     Location = new Location { DisplayName = "North Pole", Latitude = 90, Longitude = 0 }
