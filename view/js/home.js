@@ -179,7 +179,7 @@ function displayErrorMessage(error) {
 function htmlPost(post, userId) {
 	// todo
 	var locDiff = "0 km"
-	var lastPosted = "0 s"
+	var lastPosted = "0"
 	
 	var del = ""
 	if (post.Creator.UserId == userId) {
@@ -201,7 +201,7 @@ function htmlPost(post, userId) {
 						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + locDiff + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
-						'by ' + post.Creator.Name + " - " + lastPosted + " ago" +
+						'by ' + post.Creator.Name + " - " + toSMH(lastPosted) + " ago" +
 					'</span>' +
 					del +
 				'</div>' +
