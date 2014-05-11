@@ -39,7 +39,7 @@ namespace Localit.Server.Controllers
 
                 results = ( from o in stuff
                             where o.Distance <= 1.25 * range
-                            orderby new[] { (double) SqlFunctions.Cos( ( ( o.Distance - 50 ) * Math.PI / 2 ) / ( range / 4.0 ) ) * 0.5, 1 - ( 0.5 / range ) * o.Distance }.Min() * o.Post.Score
+                            orderby new[] { (double) SqlFunctions.Cos( ( ( o.Distance - 50 ) * Math.PI / 2 ) / ( range / 4.0 ) ) * 0.5, 1 - ( 0.5 / range ) * o.Distance }.Min() * o.Post.Score descending
                             select o.Post ).Include( p => p.Creator );
             }
             else
@@ -54,7 +54,7 @@ namespace Localit.Server.Controllers
 
                 results = ( from o in stuff
                             let popFact = new[] { ( o.Post.Score / 2.0 * avg ) * 0.5, 0.5 }.Min()
-                            orderby SqlFunctions.Cos( o.Distance * Math.PI / 10 ) * ( 1 - popFact ) + popFact
+                            orderby SqlFunctions.Cos( o.Distance * Math.PI / 10 ) * ( 1 - popFact ) + popFact descending
                             select o.Post ).Include( p => p.Creator );
             }
 
@@ -105,26 +105,27 @@ namespace Localit.Server.Controllers
                 throw new HttpResponseException( HttpStatusCode.BadRequest );
             }
 
-            var post = new Post
+            var post = _context.Posts.Add( new Post
             {
                 Title = info.Title,
+                Content = info.Content,
                 Creator = user,
                 Location = info.Location,
                 Score = 1,
                 CreationDate = DateTime.Now
-            };
+            } );
 
-            post = _context.Posts.Add( post );
+            _context.SaveChanges();
 
-            var vote = new Vote
+            _context.Votes.Add( new Vote
             {
                 PostId = post.PostId,
                 UserId = user.UserId
-            };
+            } );
 
-            _context.Votes.Add( vote );
             _context.SaveChanges();
 
+            post.HasUserVoted = true;
             return post;
         }
 

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>X:\LocalitPublish</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/EntityFramework.dll">
+      <publishTime>05/11/2014 02:31:05</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.SqlServer.dll">
+      <publishTime>05/11/2014 02:31:05</publishTime>
+    </File>
+    <File Include="bin/Localit.Server.dll">
+      <publishTime>05/11/2014 09:01:17</publishTime>
+    </File>
+    <File Include="bin/Localit.Server.pdb">
+      <publishTime>05/11/2014 09:01:17</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>05/11/2014 02:31:14</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>05/11/2014 02:31:11</publishTime>
+    </File>
+    <File Include="bin/System.Web.Cors.dll">
+      <publishTime>05/11/2014 02:31:05</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.Cors.dll">
+      <publishTime>05/11/2014 02:31:12</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>05/11/2014 02:31:12</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>05/11/2014 02:31:13</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>05/10/2014 17:45:44</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>05/11/2014 02:23:28</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>05/11/2014 09:01:18</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
