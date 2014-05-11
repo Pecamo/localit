@@ -26,17 +26,33 @@ $(function () {
  * @param {float} latitude Latitude of user
  * @param {float} longitude Longitude of user
  * @param {int} range Wanted max range of messages
- * @return {Array} Messages in decreasing relevance order
  */
 function loadHome(latitude, longitude, range) {
+	console.log("Displaying Home page");
+	console.log("Loading posts...")
 	getPosts(latitude, longitude, range,
 		function(posts) {
+			console.log("Posts recieved.");
 			displayPosts(posts);
 		},
 		function(error) {
+			console.log("Failed to recieve posts.");
 			alert(error);
 			displayErrorMessage(error);
 		});
+}
+
+/**
+ * Displays the Message page
+ * @param {float} latitude Latitude of user
+ * @param {float} longitude Longitude of user
+ * @param {int} range Wanted max range of messages
+ * @return {Array} Messages in decreasing relevance order
+ */
+function loadNewMessage() {
+	console.log("Displaying Message Page");
+	s = "";
+	$('.posts_container').html(s);
 }
 
 /**
@@ -44,10 +60,10 @@ function loadHome(latitude, longitude, range) {
  * @param  {Array} posts Posts
  */
 function displayPosts(posts) {
-	console.log("Displaying posts...");
 	for(var i = 0; i < posts.length; i++){
 		displayPost(posts[i]);
 	}
+	console.log("Posts displayed.");
 }
 
 /**
@@ -73,7 +89,7 @@ function displayPost(post) {
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
 						'<div onclick="upvote()" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
-						'<div>' + post.ups + '</div>' +
+						'<div class="nbVotes">' + post.ups + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
 							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.id+'">' +
@@ -118,7 +134,10 @@ function upvote(postId, userId) {
  * @param  {int} postId id of the message to display the upvote
  */
 function showUpVote(postId) {
-	arrow = $("#post"+postId+" .upvote-icon")[0];
+	arrow = $($("#post"+postId+" .upvote-icon")[0]);
 	arrow.removeClass("glyphicon-arrow-up");
 	arrow.addClass("glyphicon-ok");
+	votes = $($("#post"+postId+" .nbVotes")[0]);
+	number = votes.html();
+	votes.html(parseInt(number)+1);
 }
