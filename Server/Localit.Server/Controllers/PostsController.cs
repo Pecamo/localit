@@ -103,6 +103,31 @@ namespace Localit.Server.Controllers
             return post;
         }
 
+        [HttpDelete]
+        [Route( "" )]
+        public void DeletePost( [FromBody] PostDeleteInfo info )
+        {
+            if ( info == null )
+            {
+                throw new HttpResponseException( HttpStatusCode.BadRequest );
+            }
+
+            var post = _context.Posts.FirstOrDefault( p => p.PostId == info.PostId );
+            var user = _context.Users.FirstOrDefault( u => u.FacebookId == info.UserFacebookId );
+            if ( post == null || user == null )
+            {
+                throw new HttpResponseException( HttpStatusCode.BadRequest );
+            }
+
+            if ( post.Creator != user )
+            {
+                throw new HttpResponseException( HttpStatusCode.BadRequest );
+            }
+
+            _context.Posts.Remove( post );
+            _context.SaveChanges();
+        }
+
         [HttpPost]
         [Route( "upvote" )]
         public Post Upvote( [FromBody] UpvoteInfo info )
@@ -158,31 +183,6 @@ namespace Localit.Server.Controllers
             }
 
             return post;
-        }
-
-        [HttpDelete]
-        [Route( "" )]
-        public void DeletePost( [FromBody] PostDeleteInfo info )
-        {
-            if ( info == null )
-            {
-                throw new HttpResponseException( HttpStatusCode.BadRequest );
-            }
-
-            var post = _context.Posts.FirstOrDefault( p => p.PostId == info.PostId );
-            var user = _context.Users.FirstOrDefault( u => u.FacebookId == info.UserFacebookId );
-            if ( post == null || user == null )
-            {
-                throw new HttpResponseException( HttpStatusCode.BadRequest );
-            }
-
-            if ( post.Creator != user )
-            {
-                throw new HttpResponseException( HttpStatusCode.BadRequest );
-            }
-
-            _context.Posts.Remove( post );
-            _context.SaveChanges();
         }
     }
 }

@@ -22,11 +22,12 @@ namespace Localit.Server.Controllers
             }
 
             var user = _context.Users.FirstOrDefault( u => u.FacebookId == info.FacebookId );
-            if ( user == null )
+            if ( user != null )
             {
-                _context.Users.Add( new User { FacebookId = info.FacebookId, Name = info.Name } );
-                _context.SaveChanges();
+                _context.Users.Remove( user );
             }
+            _context.Users.Add( new User { FacebookId = info.FacebookId, Name = info.Name } );
+            _context.SaveChanges();
         }
     }
 }
