@@ -22,7 +22,7 @@ $(function () {
 				range = 0;		// Get it from... we'll see later.
 				console.log("got new position")
 				if(state === states.local){
-					displayHome(latitude, longitude, 20);
+					backHome();
 				} else if (state === states.regional){
 					displayRanged(latitude, longitude, range);
 				}
