@@ -16,7 +16,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/11/2014 02:31:05</publishTime>
     </File>
     <File Include="bin/Localit.Server.dll">
-      <publishTime>05/11/2014 11:15:55</publishTime>
+      <publishTime>05/11/2014 11:45:10</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>05/11/2014 02:31:14</publishTime>
