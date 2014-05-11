@@ -1,0 +1,5 @@
+/server/packages/*
+/server/Localit.Server/bin/*
+/server/Localit.Server/obj/*
+*.suo
+*.csproj.user
