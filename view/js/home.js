@@ -172,7 +172,6 @@ function displayNewMessage() {
 		"</form>";
 		$('#main_content').html(s);
 		$('#newPost').addClass("active");
-		$("#regio").removeClass("active");
 		$("#loc").removeClass("active");
 	} else {
 		alert("You are not logged in !");
@@ -210,7 +209,6 @@ function submitPost() {
 function backHome() {
 	displayHome(userId, latitude, longitude, 20);
 	$('#newPost').removeClass("active");
-	$("#regio").removeClass("active");
 	$("#loc").addClass("active");
 	state = states.local;
 }
@@ -218,7 +216,6 @@ function backHome() {
 function backRanged() {
 	displayRanged(userId, latitude, longitude, 5);
 	$('#newPost').removeClass("active");
-	$("#regio").removeClass("active");
 	$("#loc").addClass("active");
 	state = states.regional;
 }
