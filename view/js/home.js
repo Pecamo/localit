@@ -6,19 +6,11 @@ $(function () {
 				longitude = position.coords.longitude;
 				range = 0;		// Get it from... we'll see later.
 
-				userId = 2;
+				userId = -1;
 				displayHome(userId, latitude, longitude, range);
-
-				//Test
-				for(var i = 0; i < 3; ++i) {
-					var post = new Array();
-					post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
-					$("#main_content").append(htmlPost(post));
-				}
-				// End Test
 			},
             function() {
-
+            	console.log("Failed to get localization");
             },
             {enableHighAccuracy:true}
         );
@@ -86,8 +78,14 @@ function displayHome(userId, latitude, longitude) {
 	console.log("Loading posts...")
 	fetchPosts(latitude, longitude, 0,
 		function(posts) {
-			console.log("Posts recieved.");
-			displayPosts(posts, userId);
+			if (posts == null) {
+				console.log("Recieved nothing.");
+			} else if (posts.length == 0) {
+				console.log("Recieved no post.");
+			} else {
+				console.log(posts.length + " Posts recieved.");
+				displayPosts(posts, userId);
+			}
 		},
 		function(error) {
 			console.log("Failed to recieve posts.");
@@ -244,7 +242,6 @@ function tryDelete(post, userId) {
 function upvote(postId, userId) {
 	interestedInPost(postId, userId,
 		function() {
-			alert("Fnupvoted !");
 			showUpvote(postId);
 		}),
 		function(response) {
