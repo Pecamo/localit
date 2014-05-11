@@ -8,6 +8,9 @@ var states = {
 	submit : 2
 }
 
+var upvoteIcon="glyphicon-arrow-up";
+var upvotedIcon="glyphicon-ok";
+
 var state = states.local;
 
 $(function () {
@@ -279,13 +282,13 @@ function htmlPost(post, userId) {
 	var distance = computeDistance(latitude, longitude, post.Location.Latitude, post.Location.Longitude) + " km";
 	var lastPosted = toSMH(((new Date().getTime()) - parseDate(post.CreationDate).getTime()) / 1000);
 	
-	var voteIcon = "glyphicon-arrow-up";
+	var voteIcon = upvoteIcon;
 
 	if (post.HasUserVoted == true) {
-		voteIcon = "glyphicon-ok";
+		voteIcon = upvotedIcon;
 		actionIcon = 'cancelUpvote('+post.PostId+', '+userId+')';
 	} else {
-		voteIcon = "glyphicon-arrow-up";
+		voteIcon = upvoteIcon;
 		actionIcon = 'upvote('+post.PostId+', '+userId+')';
 	}
 	
@@ -397,8 +400,8 @@ function cancelUpvote(postId) {
  */
 function showUpvote(postId) {
 	arrow = $($("#post"+postId+" .upvote-icon")[0]);
-	arrow.removeClass("glyphicon-arrow-up");
-	arrow.addClass("glyphicon-ok");
+	arrow.removeClass(upvoteIcon);
+	arrow.addClass(upvotedIcon);
 	arrow.attr('onclick','').unbind('click');
 	arrow.click(function () {
 		cancelUpvote(postId, userId);
@@ -414,8 +417,8 @@ function showUpvote(postId) {
  */
 function showDownvote(postId) {
 	arrow = $($("#post"+postId+" .upvote-icon")[0]);
-	arrow.removeClass("glyphicon-ok");
-	arrow.addClass("glyphicon-arrow-up");
+	arrow.removeClass(upvotedIcon);
+	arrow.addClass(upvoteIcon);
 	arrow.click(function () {
 		upvote(postId, userId);
 	});
@@ -426,8 +429,8 @@ function showDownvote(postId) {
 
 function showVoted(postId) {
 	arrow = $($("#post"+postId+" .upvote-icon")[0]);
-	arrow.removeClass("glyphicon-arrow-up");
-	arrow.addClass("glyphicon-ok");
+	arrow.removeClass(upvoteIcon);
+	arrow.addClass(upvotedIcon);
 	arrow.click(function () {
 		console.log("SALUT");
 		cancelUpvote(postId, userId);
