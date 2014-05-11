@@ -9,7 +9,7 @@ $(function () {
 				longitude = position.coords.longitude;
 				range = 0;		// Get it from... we'll see later.
 				console.log("got new position")
-				displayHome(userId, latitude, longitude, range);
+				displayHome(latitude, longitude, range);
 			},
             function() {
             	console.log("Failed to get localization");
@@ -67,7 +67,7 @@ function facebookConnected() {
 
 			logIn(userData, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
 			userId = response.id;
-			displayHome(userId, latitude, longitude, range);
+			displayHome(latitude, longitude, range);
 		}
 	});
 }
@@ -78,7 +78,7 @@ function facebookConnected() {
  * @param {float} longitude Longitude of user
  * @param {int} range Wanted max range of messages
  */
-function displayHome(userId, latitude, longitude) {
+function displayHome(latitude, longitude) {
 	console.log("Displaying Home page");
 	console.log("Loading posts...")
 	fetchPosts(userId, latitude, longitude, 0,
@@ -106,7 +106,7 @@ function displayHome(userId, latitude, longitude) {
  * @param {float} range Max range in kilometers
  * @param {int} range Wanted max range of messages
  */
-function displayRanged(userId, latitude, longitude, range) {
+function displayRanged(latitude, longitude, range) {
 	console.log("Displaying Ranged page");
 	console.log("Loading posts...")
 	fetchPosts(userId, latitude, longitude, range,
@@ -165,7 +165,7 @@ function displayPosts(posts, userId) {
 			}
 		})
 		if (posts[i].HasUserVoted == true) {
-			showUpVote(posts[i].PostId);
+			showVoted(posts[i].PostId);
 		}
 	}
 
@@ -188,6 +188,11 @@ function htmlPost(post, userId) {
 	// todo
 	var distance = computeDistance(latitude, longitude, post.Location.Latitude, post.Location.Longitude) + " km"
 	var lastPosted = "0"
+	var voteIcon = "glyphicon-arrow-up";
+
+	if (post.HasUserVoted == true) {
+		voteIcon = "glyphicon-ok";
+	}
 	
 	var del = ""
 	if (post.Creator.UserId == userId) {
@@ -199,7 +204,7 @@ function htmlPost(post, userId) {
 			'<div class="panel-heading">' +
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
-						'<div onclick="upvote('+post.PostId+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
+						'<div onclick="upvote('+post.PostId+', '+userId+')" class="glyphicon ' + voteIcon + ' upvote-icon"></div>' +
 						'<div class="nbVotes">' + post.Score + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
@@ -268,4 +273,10 @@ function showUpvote(postId) {
 	votes = $($("#post"+postId+" .nbVotes")[0]);
 	number = votes.html();
 	votes.html(parseInt(number)+1);
+}
+
+function showVoted(postId) {
+	arrow = $($("#post"+postId+" .upvote-icon")[0]);
+	arrow.removeClass("glyphicon-arrow-up");
+	arrow.addClass("glyphicon-ok");
 }
