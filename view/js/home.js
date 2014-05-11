@@ -207,7 +207,7 @@ function submitPost() {
 }
 
 function backHome() {
-	displayHome(userId, latitude, longitude, 20);
+	displayHome(latitude, longitude, 20);
 	$('#newPost').removeClass("active");
 	$("#loc").addClass("active");
 	state = states.local;
