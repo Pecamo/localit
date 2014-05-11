@@ -81,7 +81,7 @@ function facebookConnected() {
 function displayHome(userId, latitude, longitude) {
 	console.log("Displaying Home page");
 	console.log("Loading posts...")
-	fetchPosts(latitude, longitude, 0,
+	fetchPosts(userId, latitude, longitude, 0,
 		function(posts) {
 			if (posts == null) {
 				console.log("Received nothing.");
@@ -109,7 +109,7 @@ function displayHome(userId, latitude, longitude) {
 function displayRanged(userId, latitude, longitude, range) {
 	console.log("Displaying Ranged page");
 	console.log("Loading posts...")
-	fetchPosts(latitude, longitude, range,
+	fetchPosts(userId, latitude, longitude, range,
 		function(posts) {
 			console.log("Posts received.");
 			displayPosts(posts, userId);

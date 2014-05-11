@@ -8,13 +8,17 @@ var posts_root = api_root + "posts"
  * - successCallback : function called in case of a success, must take an array of objects as argument 
  * - failCallback : function called in case the communication fails
  */
-function fetchPosts(latitude, longitude, range, successCallback, failCallback) {
+function fetchPosts(userId, latitude, longitude, range, successCallback, failCallback) {
 	rangeString = "";
+	idString = "";
 	
 	if (range != 0) {
 		rangeString = "&range=" + range;
 	}
-	httpGET(posts_root + "?latitude=" + latitude + "&longitude=" + longitude + rangeString, successCallback, failCallback);
+	if (userId != -1) {
+		idString = "&userFacebookId=" + userId;
+	}
+	httpGET(posts_root + "?latitude=" + latitude + "&longitude=" + longitude + rangeString + idString, successCallback, failCallback);
 }
 
 /*
