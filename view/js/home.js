@@ -191,7 +191,7 @@ function submitPost() {
 	if(userId != -1){
 		var title = $("#title").val();
 		var message = $("#message").val();
-		if(title != "" && title != null && title != undefined && message != "" && message != null && message != undefined && trim(title) != "" && trim(message) != ""){
+		if(title != "" && title != null && title != undefined && message != "" && message != null && message != undefined && title.trim() != "" && message.trim() != ""){
 			console.log("OK");
 			var loc = new google.maps.LatLng(latitude, longitude);
 			var map = new google.maps.Map(document.getElementById('map'), {
