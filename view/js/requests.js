@@ -35,7 +35,17 @@ function getPost(id, successCallback, failCallback) {
  * - successCallback : function called in case of a success
  * - failCallback : function called in case the communication fails
  */
-function addPost(post, successCallback, failCallback) {
+function addPost(userId, title, content, latitude, longitude, displayname, successCallback, failCallback) {
+	var data = {
+		userFacebookID : userID,
+		Title : post.Title,
+		Content : post.Content,
+		Location : {
+			Latitude : latitude,
+			Longitude : longitude,
+			DisplayName : displayname
+		}
+	};
 	httpPOST(posts_root + "/add", post, successCallback, failCallback);
 }
 
@@ -71,7 +81,7 @@ function deletePost(post, successCallback, failCallback) {
 function interestedInPost(postID, userID, successCallback, failCallback) {
 	var data = {
 		postID : postID,
-		userID : userID
+		userFacebookID : userID
 	};
 	httpPOST(posts_root + "/upvote", data, successCallback, failCallback);
 }
