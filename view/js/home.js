@@ -62,8 +62,14 @@ $(function () {
         js.src = "//connect.facebook.net/en_US/sdk.js";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
-})
 
+    $("#km").keypress(function (event){
+		if (event.which == 13){
+			event.preventDefault();
+			backHome();
+		}
+	});
+})
 
 function facebookConnected() {
 	FB.api('/me', { fields: 'id, name, link' }, function(response){
@@ -172,7 +178,7 @@ function displayNewMessage() {
 		"</form>";
 		$('#main_content').html(s);
 		$('#newPost').addClass("active");
-		$("#loc").removeClass("active");
+		$("#lookup").removeClass("active");
 	} else {
 		alert("You are not logged in !");
 	} 
@@ -207,16 +213,21 @@ function submitPost() {
 }
 
 function backHome() {
-	displayHome(latitude, longitude, 20);
+	var range = $("#km").val();
+	if (range != ""){
+		displayHome(latitude, longitude, parseInt(range));
+	} else {
+		displayHome(latitude, longitude, 20);
+	}
 	$('#newPost').removeClass("active");
-	$("#loc").addClass("active");
+	$("#lookup").addClass("active");
 	state = states.local;
 }
 
 function backRanged() {
 	displayRanged(userId, latitude, longitude, 5);
 	$('#newPost').removeClass("active");
-	$("#loc").addClass("active");
+	$("#lookup").addClass("active");
 	state = states.regional;
 }
 

@@ -48,3 +48,12 @@ div {
 .fbPicture {
 	margin:3px;
 }
+
+#km {
+	width: 100px;
+	padding: 8px 4px;
+	text-decorationalign: right;
+}
+#lookup, #newPost {
+	font-size: 15px;
+}
