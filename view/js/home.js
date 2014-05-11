@@ -186,8 +186,8 @@ function displayErrorMessage(error) {
  */
 function htmlPost(post, userId) {
 	// todo
-	var distance = computeDistance(latitude, longitude, post.Location.Latitude, post.Location.Longitude) + " km"
-	var lastPosted = "0"
+	var distance = computeDistance(latitude, longitude, post.Location.Latitude, post.Location.Longitude) + " km";
+	var lastPosted = toSMH(((new Date().getTime()) - Date.parse(post.CreationDate)) / 1000);
 	
 	var del = ""
 	if (post.Creator.UserId == userId) {
@@ -209,7 +209,7 @@ function htmlPost(post, userId) {
 						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + distance + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
-						'by ' + post.Creator.Name + " - " + toSMH(lastPosted) + " ago" +
+						'by ' + post.Creator.Name + " - " + lastPosted + " ago" +
 					'</span>' +
 					del +
 				'</div>' +
