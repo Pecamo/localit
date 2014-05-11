@@ -9,6 +9,7 @@ var posts_root = api_root + "posts"
  * - failCallback : function called in case the communication fails
  */
 function fetchPosts(userId, latitude, longitude, range, successCallback, failCallback) {
+	console.log(range)
 	rangeString = "";
 	idString = "";
 	

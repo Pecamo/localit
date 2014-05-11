@@ -189,27 +189,32 @@ function displayNewMessage() {
 
 function submitPost() {
 	if(userId != -1){
-		console.log("OK");
-
-		var loc = new google.maps.LatLng(latitude, longitude);
-		var map = new google.maps.Map(document.getElementById('map'), {
-      		center: loc,
-      		zoom: 15
-    	});
-    	var request = {
-    		location: loc,
-    		radius: '10',
-  		};
-  		var service = new google.maps.places.PlacesService(map);
-  		service.nearbySearch(request, function (results, status){
-  			if (status == google.maps.places.PlacesServiceStatus.OK) {
-  				console.log(results);
-				addPost(userId,$("#title").val(),$("#message").val(),latitude,longitude,results[0].name, function(response){backHome();}, function(response){alert(response);backHome();})
-  			} else {
-  				alert("google maps problem !")
-  				backHome();
-  			}
-  		});
+		var title = $("#title").val();
+		var message = $("#message").val();
+		if(title != "" && title != null && title != undefined && message != "" && message != null && message != undefined && trim(title) != "" && trim(message) != ""){
+			console.log("OK");
+			var loc = new google.maps.LatLng(latitude, longitude);
+			var map = new google.maps.Map(document.getElementById('map'), {
+	      		center: loc,
+	      		zoom: 15
+	    	});
+	    	var request = {
+	    		location: loc,
+	    		radius: '10',
+	  		};
+	  		var service = new google.maps.places.PlacesService(map);
+	  		service.nearbySearch(request, function (results, status){
+	  			if (status == google.maps.places.PlacesServiceStatus.OK) {
+	  				console.log(results);
+					addPost(userId,title,message,latitude,longitude,results[0].name, function(response){backHome();}, function(response){alert(response);backHome();})
+	  			} else {
+	  				alert("google maps problem !")
+	  				backHome();
+	  			}
+	  		});
+  		} else {
+  			alert("Title or message is not filled !");
+  		}
 	} else {
 		alert("You are not logged in !")
 	}
