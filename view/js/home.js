@@ -12,7 +12,7 @@ $(function () {
 				for(var i = 0; i < 3; ++i) {
 					var post = new Array();
 					post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
-					displayPost(post);
+					$("#main_content").append(htmlPost(post));
 				}
 				// End Test
 			},
@@ -64,7 +64,7 @@ function displayNewMessage() {
 	  "</div>" + 
 	  "<button type='submit' class='btn btn-default'>Submit</button>" + 
 	"</form>";
-	$('#wrapper').html(s);
+	$('#main_content').html(s);
 }
 
 /**
@@ -72,11 +72,15 @@ function displayNewMessage() {
  * @param  {Array} posts Posts
  */
 function displayPosts(posts) {
-	userId=2;
+	userId = 2; // TODO : Get real user ID
+	string = '<div class="posts_container panel-group" id="accordion">';
 	for(var i = 0; i < posts.length; i++){
-		displayPost(posts[i], userId);
+		string += htmlPost(posts[i], userId);
 	}
+	string += "</div>";
+
 	console.log("Posts displayed.");
+	$('#main_content').html(string);
 }
 
 /**
@@ -88,10 +92,11 @@ function displayErrorMessage(error) {
 }
 
 /**
- * Displays a post
- * @param  {Array} post Post
+ * Returns the HTLM to display a post
+ * @param  {Array} post Post Object
+ * @return {String} HTML to display a post
  */
-function displayPost(post, userId) {
+function htmlPost(post, userId) {
 	// todo
 	var locDiff = "0 km"
 	var lastPosted = "0 s"
@@ -123,7 +128,7 @@ function displayPost(post, userId) {
 			'</div>' +
 		'</div>'
 
-	$('.posts_container').append(s);
+	return s
 }
 
 /**
@@ -135,7 +140,7 @@ function upvote(postId, userId) {
 	interestedInPost(postId, userId,
 		function() {
 			alert("Fnupvoted !");
-			showUpVote(postId);
+			showUpvote(postId);
 		}),
 		function(response) {
 			displayErrorMessage(response);
@@ -146,7 +151,7 @@ function upvote(postId, userId) {
  * Updates the local display with the upvote
  * @param  {int} postId id of the message to display the upvote
  */
-function showUpVote(postId) {
+function showUpvote(postId) {
 	arrow = $($("#post"+postId+" .upvote-icon")[0]);
 	arrow.removeClass("glyphicon-arrow-up");
 	arrow.addClass("glyphicon-ok");
