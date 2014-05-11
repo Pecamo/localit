@@ -58,12 +58,12 @@ $(function () {
 
 
 function facebookConnected() {
-	FB.api('/me', { fields: 'id, name' }, function(response){
+	FB.api('/me', { fields: 'id, name, link' }, function(response){
 		console.log(response);
 		if (response.error){
 			console.log("Logged out")
 		} else {
-			logIn(response.id, response.name, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
+			logIn(response.id, response.name, response.link, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
 		}
 	});
 }

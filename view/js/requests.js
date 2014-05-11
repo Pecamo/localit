@@ -75,8 +75,8 @@ function interestedInPost(postID, userID, successCallback, failCallback) {
 	httpPOST(posts_root + "/upvote", data, successCallback, failCallback);
 }
 
-function logIn(id, name, successCallback, failCallback){
-	httpPOST(api_root + "auth", {FacebookId:id, Name:name}, successCallback, failCallback);
+function logIn(id, name, profileLink, successCallback, failCallback){
+	httpPOST(api_root + "auth", {FacebookId:id, Name:name, ProfileLink : profileLink}, successCallback, failCallback);
 }
 
 /*
