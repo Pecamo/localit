@@ -1,23 +1,28 @@
 $(function () {
 	if (navigator.geolocation){
-		var watchId = navigator.geolocation.watchPosition(successCallback,
-                            null,
-                            {enableHighAccuracy:true});
+		var watchId = navigator.geolocation.watchPosition(
+			function(position) {
+				latitude = position.coords.latitude;
+				longitude = position.coords.longitude;
+				range = 50;		// Get it from... we'll see later.
+
+				displayHome(latitude, longitude, range);
+
+				//Test
+				for(var i = 0; i < 3; ++i) {
+					var post = new Array();
+					post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
+					displayPost(post);
+				}
+				// End Test
+			},
+            function() {
+
+            },
+            {enableHighAccuracy:true}
+        );
 	} else {
 		alert("Your browser does not support HTML5 geolocation.");
-	}
-	
-	function successCallback(position){
-		latitude = position.coords.latitude;
-		longitude = position.coords.longitude;
-		range = 50;		// Get it from... we'll see later.
-
-		loadHome(latitude, longitude, range);
-		for(var i = 0; i < 3; ++i) {
-			var post = new Array();
-			post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
-			displayPost(post);
-		}
 	}
 })
 
@@ -27,7 +32,7 @@ $(function () {
  * @param {float} longitude Longitude of user
  * @param {int} range Wanted max range of messages
  */
-function loadHome(latitude, longitude, range) {
+function displayHome(latitude, longitude, range) {
 	console.log("Displaying Home page");
 	console.log("Loading posts...")
 	getPosts(latitude, longitude, range,
@@ -44,15 +49,22 @@ function loadHome(latitude, longitude, range) {
 
 /**
  * Displays the Message page
- * @param {float} latitude Latitude of user
- * @param {float} longitude Longitude of user
- * @param {int} range Wanted max range of messages
- * @return {Array} Messages in decreasing relevance order
  */
-function loadNewMessage() {
+function displayNewMessage() {
 	console.log("Displaying Message Page");
-	s = "";
-	$('.posts_container').html(s);
+	s = 
+	"<form role='form'>" + 
+	  "<div class='form-group'>" + 
+	    "<label for='title'>Title</label>" + 
+	    "<input type='text' class='form-control' id='title' placeholder='Title of your message'>" + 
+	  "</div>" + 
+	  "<div class='form-group'>" + 
+	    "<label for='message'>Password</label>" + 
+	    "<textarea class='form-control' id='message' placeholder='Your message' rows='3'></textarea>" + 
+	  "</div>" + 
+	  "<button type='submit' class='btn btn-default'>Submit</button>" + 
+	"</form>";
+	$('#wrapper').html(s);
 }
 
 /**
@@ -60,8 +72,9 @@ function loadNewMessage() {
  * @param  {Array} posts Posts
  */
 function displayPosts(posts) {
+	userId=2;
 	for(var i = 0; i < posts.length; i++){
-		displayPost(posts[i]);
+		displayPost(posts[i], userId);
 	}
 	console.log("Posts displayed.");
 }
@@ -78,7 +91,7 @@ function displayErrorMessage(error) {
  * Displays a post
  * @param  {Array} post Post
  */
-function displayPost(post) {
+function displayPost(post, userId) {
 	// todo
 	var locDiff = "0 km"
 	var lastPosted = "0 s"
@@ -88,7 +101,7 @@ function displayPost(post) {
 			'<div class="panel-heading">' +
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
-						'<div onclick="upvote()" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
+						'<div onclick="upvote('+post.id+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
 						'<div class="nbVotes">' + post.ups + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
