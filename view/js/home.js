@@ -306,7 +306,7 @@ function htmlPost(post, userId) {
 						'<span class="small_text"> at '+ purify(post.Location.DisplayName) + ' (~' + distance + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
-						'by <a href="'+ post.Creator.ProfileLink+'"><img src="'+ post.Creator.PictureUrl + '" class="fbPicture">' + purify(post.Creator.Name) + "</a> - " + lastPosted + " ago" +
+						'by <a href="'+ post.Creator.ProfileLink+'"><img src="'+ post.Creator.PictureUrl + '" class="fbPicture">' + purify(post.Creator.Name) + "</a> - " + lastPosted +
 					'</span>' +
 					del +
 				'</div>' +
