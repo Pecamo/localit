@@ -10,6 +10,7 @@ var posts_root = api_root + "posts"
  */
 function fetchPosts(latitude, longitude, range, successCallback, failCallback) {
 	rangeString = "";
+	
 	if (range != 0) {
 		rangeString = "&range=" + range;
 	}

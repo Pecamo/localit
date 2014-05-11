@@ -100,10 +100,22 @@ function displayHome(userId, latitude, longitude) {
  * Retrieves messags based on localization and range
  * @param {float} latitude Latitude of user
  * @param {float} longitude Longitude of user
+ * @param {float} range Max range in kilometers
  * @param {int} range Wanted max range of messages
  */
 function displayRanged(userId, latitude, longitude, range) {
-	console.log("Todo");
+	console.log("Displaying Ranged page");
+	console.log("Loading posts...")
+	fetchPosts(latitude, longitude, range,
+		function(posts) {
+			console.log("Posts recieved.");
+			displayPosts(posts, userId);
+		},
+		function(error) {
+			console.log("Failed to recieve posts.");
+			alert(error);
+			displayErrorMessage(error);
+		});
 }
 
 /**
@@ -168,21 +180,20 @@ function displayErrorMessage(error) {
  */
 function htmlPost(post, userId) {
 	// todo
-	var currentUser = "The pouldre"
 	var locDiff = "0 km"
 	var lastPosted = "0 s"
 	
 	var del = ""
-	if (post.Creator == currentUser) {
+	if (post.Creator.UserId == userId) {
 		del = '<div id="delete_link' + post.id + '" class="pull-right small_text">delete this post</div>'
 	}
 	
 	var s = 
-		'<div id="post' + post.PostIt + '" class="panel panel-default post">' +
+		'<div id="post' + post.PostId + '" class="panel panel-default post">' +
 			'<div class="panel-heading">' +
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
-						'<div onclick="upvote('+post.PostIt+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
+						'<div onclick="upvote('+post.PostId+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
 						'<div class="nbVotes">' + post.Score + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
@@ -192,7 +203,7 @@ function htmlPost(post, userId) {
 						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + locDiff + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
-						'by ' + post.Creator + " - " + lastPosted + " ago" +
+						'by ' + post.Creator.Name + " - " + lastPosted + " ago" +
 					'</span>' +
 					del +
 				'</div>' +
@@ -210,7 +221,7 @@ function htmlPost(post, userId) {
 
 
 function tryDelete(post, userId) {
-	if(post.author == userId) {
+	if(post.Creator.UserId == userId) {
 		deletePost(post,
 			function () {
 				alert("Post deleted with FNU ! ");
