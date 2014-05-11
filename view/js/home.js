@@ -1,3 +1,6 @@
+var userId=-1;
+var latitude;
+var longitude;
 $(function () {
 	if (navigator.geolocation){
 		var watchId = navigator.geolocation.watchPosition(
@@ -5,8 +8,7 @@ $(function () {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
 				range = 0;		// Get it from... we'll see later.
-
-				userId = -1;
+				console.log("got new position")
 				displayHome(userId, latitude, longitude, range);
 			},
             function() {
@@ -63,6 +65,8 @@ function facebookConnected() {
 			};
 
 			logIn(userData, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
+			userId = response.id;
+			displayHome(userId, latitude, longitude, range);
 		}
 	});
 }
