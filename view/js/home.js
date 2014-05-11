@@ -63,7 +63,14 @@ function facebookConnected() {
 		if (response.error){
 			console.log("Logged out");
 		} else {
-			logIn(response.id, response.name, response.link, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
+			var userData = {
+				Name: response.name,
+				PictureUrl: 'http://graph.facebook.com/'+response.id+'/picture?type=square&height=32&width=32',
+				ProfileLink: response.link,
+				FacebookId: response.id
+			};
+
+			logIn(userData, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
 		}
 	});
 }
