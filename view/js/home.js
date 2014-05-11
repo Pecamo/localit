@@ -6,7 +6,8 @@ $(function () {
 				longitude = position.coords.longitude;
 				range = 50;		// Get it from... we'll see later.
 
-				displayHome(latitude, longitude, range);
+				userId = 2;
+				displayHome(userId, latitude, longitude, range);
 
 				//Test
 				for(var i = 0; i < 3; ++i) {
@@ -32,13 +33,13 @@ $(function () {
  * @param {float} longitude Longitude of user
  * @param {int} range Wanted max range of messages
  */
-function displayHome(latitude, longitude, range) {
+function displayHome(userId, latitude, longitude, range) {
 	console.log("Displaying Home page");
 	console.log("Loading posts...")
-	getPosts(latitude, longitude, range,
+	fetchPosts(latitude, longitude, range,
 		function(posts) {
 			console.log("Posts recieved.");
-			displayPosts(posts);
+			displayPosts(posts, userId);
 		},
 		function(error) {
 			console.log("Failed to recieve posts.");
@@ -50,7 +51,7 @@ function displayHome(latitude, longitude, range) {
 /**
  * Displays the Message page
  */
-function displayNewMessage() {
+function displayNewMessage(userId) {
 	console.log("Displaying Message Page");
 	s = 
 	"<form role='form'>" + 
@@ -70,9 +71,9 @@ function displayNewMessage() {
 /**
  * Displays all received posts
  * @param  {Array} posts Posts
+ * @param {int} userId id of connectred user
  */
-function displayPosts(posts) {
-	userId = 2; // TODO : Get real user ID
+function displayPosts(posts, userId) {
 	string = '<div class="posts_container panel-group" id="accordion">';
 	for(var i = 0; i < posts.length; i++){
 		string += htmlPost(posts[i], userId);
@@ -81,6 +82,17 @@ function displayPosts(posts) {
 
 	console.log("Posts displayed.");
 	$('#main_content').html(string);
+	for (var i = 0; i < posts.length; i++) {
+		$('#delete_link' + post.id).on('click', function () {
+			if(post.author == currentUser) {
+				deletePost(post)
+			}
+			else {
+				alert("You are not allowed to do this.")
+			}
+		})
+	}
+
 }
 
 /**
@@ -98,8 +110,14 @@ function displayErrorMessage(error) {
  */
 function htmlPost(post, userId) {
 	// todo
+	var currentUser = "The pouldre"
 	var locDiff = "0 km"
 	var lastPosted = "0 s"
+	
+	var del = ""
+	if(post.author == currentUser) {
+		del = '<div id="delete_link' + post.id + '" class="pull-right small_text">delete this post</div>'
+	}
 	
 	var s = 
 		'<div id="post' + post.id + '" class="panel panel-default post">' +
@@ -118,17 +136,27 @@ function htmlPost(post, userId) {
 					'<span class="post_second_line small_text">' +
 						'by ' + post.author + " - " + lastPosted + " ago" +
 					'</span>' +
+					del +
 				'</div>' +
-				
 			'</div>' +
 			'<div id="collapse' + post.id + '" class="panel-collapse collapse">' +
 				'<div class="panel-body">' +
 					post.content +
 				'</div>' +
 			'</div>' +
-		'</div>'
+		'</div>';
 
-	return s
+	return s;
+
+}
+
+function deletePost(post, userId) {
+	if(post.author == userId) {
+		deletePost(post)
+	}
+	else {
+		alert("You are not allowed to do this.")
+	}
 }
 
 /**
