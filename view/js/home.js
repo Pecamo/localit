@@ -84,16 +84,16 @@ function displayHome(userId, latitude, longitude) {
 	fetchPosts(latitude, longitude, 0,
 		function(posts) {
 			if (posts == null) {
-				console.log("Recieved nothing.");
+				console.log("Received nothing.");
 			} else if (posts.length == 0) {
-				console.log("Recieved no post.");
+				console.log("Received no post.");
 			} else {
-				console.log(posts.length + " Posts recieved.");
+				console.log(posts.length + " Posts received.");
 				displayPosts(posts, userId);
 			}
 		},
 		function(error) {
-			console.log("Failed to recieve posts.");
+			console.log("Failed to receive posts.");
 			alert(error);
 			displayErrorMessage(error);
 		});
@@ -111,11 +111,11 @@ function displayRanged(userId, latitude, longitude, range) {
 	console.log("Loading posts...")
 	fetchPosts(latitude, longitude, range,
 		function(posts) {
-			console.log("Posts recieved.");
+			console.log("Posts received.");
 			displayPosts(posts, userId);
 		},
 		function(error) {
-			console.log("Failed to recieve posts.");
+			console.log("Failed to receive posts.");
 			alert(error);
 			displayErrorMessage(error);
 		});
@@ -183,12 +183,12 @@ function displayErrorMessage(error) {
  */
 function htmlPost(post, userId) {
 	// todo
-	var locDiff = "0 km"
+	var distance = computeDistance(latitude, longitude, post.Location.Latitude, post.Location.Longitude) + " km"
 	var lastPosted = "0"
 	
 	var del = ""
 	if (post.Creator.UserId == userId) {
-		del = '<div id="delete_link' + post.id + '" class="pull-right small_text">delete this post</div>'
+		del = '<div id="delete_link' + post.PostId + '" class="pull-right small_text">delete this post</div>'
 	}
 	
 	var s = 
@@ -203,7 +203,7 @@ function htmlPost(post, userId) {
 							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.PostId+'">' +
 									post.Title +
 							'</a>' +
-						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + locDiff + ')</span>' +
+						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + distance + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
 						'by ' + post.Creator.Name + " - " + toSMH(lastPosted) + " ago" +
