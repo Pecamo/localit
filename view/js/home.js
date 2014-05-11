@@ -25,7 +25,60 @@ $(function () {
 	} else {
 		alert("Your browser does not support HTML5 geolocation.");
 	}
+
+	function successCallback(position){
+		latitude = position.coords.latitude;
+		longitude = position.coords.longitude;
+		range = 50;		// Get it from... we'll see later.
+
+		loadHome(latitude, longitude, range);
+		for(var i = 0; i < 3; ++i) {
+			var post = new Array();
+			post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
+			displayPost(post);
+		}
+	}
+
+	window.fbAsyncInit = function() {
+		FB.init({
+	  		appId      : '569948019785822',
+	  		xfbml      : true,
+	  		version    : 'v2.0'
+		});
+		FB.getLoginStatus(function(response) {
+			console.log("getLoginStatus")
+			if (response.status === 'connected') {
+				facebookConnected();
+			}
+			else if (response.status === 'not_authorized') {
+				// the user is logged in to Facebook, 
+				// but has not authenticated your app
+			}
+			else {
+				// the user isn't logged in to Facebook.
+			}
+		});
+    };
+		(function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 })
+
+
+function facebookConnected() {
+	FB.api('/me', { fields: 'id, name' }, function(response){
+		console.log(response);
+		if (response.error){
+			console.log("Logged out")
+		} else {
+			logIn(response.id, response.name, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
+		}
+	});
+}
 
 /**
  * Retrieves messages based on mode and localization
