@@ -1,15 +1,23 @@
 $(function () {
+	if (navigator.geolocation){
+		var watchId = navigator.geolocation.watchPosition(successCallback,
+                            null,
+                            {enableHighAccuracy:true});
+	} else {
+		alert("Your browser does not support HTML5 geolocation.");
+	}
 	
-	latitude = 0;	// Get it using localization
-	longitude = 0;	// Get it using localization
-	range = 50;		// Get it from... we'll see later.
+	function successCallback(position){
+		latitude = position.coords.latitude;
+		longitude = position.coords.longitude;
+		range = 50;		// Get it from... we'll see later.
 
-	loadHome(latitude, longitude, range);
-
-	for(var i = 0; i < 3; ++i) {
-		var post = new Array()
-		post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"}
-		displayPost(post);
+		loadHome(latitude, longitude, range);
+		for(var i = 0; i < 3; ++i) {
+			var post = new Array();
+			post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
+			displayPost(post);
+		}
 	}
 })
 
