@@ -1,4 +1,4 @@
-var userId=-1;
+xvar userId=-1;
 var latitude;
 var longitude;
 $(function () {
@@ -55,6 +55,7 @@ function facebookConnected() {
 	FB.api('/me', { fields: 'id, name, link' }, function(response){
 		console.log(response);
 		if (response.error){
+			userId = -1;
 			console.log("Logged out");
 		} else {
 			var userData = {
