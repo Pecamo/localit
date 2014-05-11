@@ -29,12 +29,18 @@ div {
 
 .post_title {
 	font-size: 20px;
+	font-weight: bold;
 }
 
 .small_text {
 	font-size: 13px;
+	color: #C9C9C9;
 }
 
 .fb-login-button {
 	margin-top: 12px;
+}
+
+.fbPicture {
+	margin:3px;
 }

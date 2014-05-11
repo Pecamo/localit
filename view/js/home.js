@@ -19,7 +19,7 @@ $(function () {
 				range = 0;		// Get it from... we'll see later.
 				console.log("got new position")
 				if(state === states.local){
-					displayHome(latitude, longitude);
+					displayHome(latitude, longitude, 20);
 				} else if (state === states.regional){
 					displayRanged(latitude, longitude, range);
 				}
@@ -75,7 +75,7 @@ function facebookConnected() {
 		} else {
 			var userData = {
 				Name: response.name,
-				PictureUrl: 'http://graph.facebook.com/'+response.id+'/picture?type=square&height=32&width=32',
+				PictureUrl: 'http://graph.facebook.com/'+response.id+'/picture?type=square&height=16&width=16',
 				ProfileLink: response.link,
 				FacebookId: response.id
 			};
@@ -83,7 +83,7 @@ function facebookConnected() {
 			logIn(userData, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
 			userId = response.id;
 			if(state === 0){
-				displayHome(latitude, longitude);
+				displayHome(latitude, longitude, 20);
 			} else if (state === 1){
 				displayRanged(latitude, longitude, range);
 			}
@@ -97,11 +97,11 @@ function facebookConnected() {
  * @param {float} longitude Longitude of user
  * @param {int} range Wanted max range of messages
  */
-function displayHome(latitude, longitude) {
+function displayHome(latitude, longitude, range) {
 	displayIfNothing("Loading messages...");
 	console.log("Displaying Home page");
 	console.log("Loading posts...")
-	fetchPosts(userId, latitude, longitude, 0,
+	fetchPosts(userId, latitude, longitude, range,
 		function(posts) {
 			if (posts == null) {
 				displayIfNothing("Received nothing.");
@@ -118,7 +118,6 @@ function displayHome(latitude, longitude) {
 		function(error) {
 			displayIfNothing("Failed to receive posts.");
 			console.log("Failed to receive posts.");
-			displayErrorMessage(error);
 		});
 }
 
@@ -149,8 +148,6 @@ function displayRanged(latitude, longitude, range) {
 		},
 		function(error) {
 			console.log("Failed to receive posts.");
-			alert(error);
-			displayErrorMessage(error);
 		});
 }
 
@@ -211,7 +208,7 @@ function submitPost() {
 }
 
 function backHome() {
-	displayHome(userId, latitude, longitude, range);
+	displayHome(userId, latitude, longitude, 20);
 	$('#newPost').removeClass("active");
 	$("#regio").removeClass("active");
 	$("#loc").addClass("active");
@@ -309,7 +306,7 @@ function htmlPost(post, userId) {
 						'<span class="small_text"> at '+ purify(post.Location.DisplayName) + ' (~' + distance + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
-						'by ' + purify(post.Creator.Name) + " - " + lastPosted + " ago" +
+						'by <a href="'+ post.Creator.ProfileLink+'"><img src="'+ post.Creator.PictureUrl + '" class="fbPicture">' + purify(post.Creator.Name) + "</a> - " + lastPosted + " ago" +
 					'</span>' +
 					del +
 				'</div>' +
@@ -352,7 +349,7 @@ function upvote(postId) {
 			showUpvote(postId);
 		}),
 		function(response) {
-			displayErrorMessage(response);
+			console.log(response);
 		}
 }
 
