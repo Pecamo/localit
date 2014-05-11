@@ -61,7 +61,7 @@ function facebookConnected() {
 	FB.api('/me', { fields: 'id, name, link' }, function(response){
 		console.log(response);
 		if (response.error){
-			console.log("Logged out")
+			console.log("Logged out");
 		} else {
 			logIn(response.id, response.name, response.link, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
 		}
@@ -74,10 +74,10 @@ function facebookConnected() {
  * @param {float} longitude Longitude of user
  * @param {int} range Wanted max range of messages
  */
-function displayHome(userId, latitude, longitude, range) {
+function displayHome(userId, latitude, longitude) {
 	console.log("Displaying Home page");
 	console.log("Loading posts...")
-	fetchPosts(latitude, longitude, range,
+	fetchPosts(latitude, longitude, 0,
 		function(posts) {
 			console.log("Posts recieved.");
 			displayPosts(posts, userId);
@@ -87,6 +87,16 @@ function displayHome(userId, latitude, longitude, range) {
 			alert(error);
 			displayErrorMessage(error);
 		});
+}
+
+/**
+ * Retrieves messags based on localization and range
+ * @param {float} latitude Latitude of user
+ * @param {float} longitude Longitude of user
+ * @param {int} range Wanted max range of messages
+ */
+function displayRanged(userId, latitude, longitude, range) {
+	console.log("Todo");
 }
 
 /**
