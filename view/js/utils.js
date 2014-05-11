@@ -1,3 +1,6 @@
+/** Returns the two biggest neighbour units of day/hours/minutes/seconds.
+ * Returns nothing if there is less than one minute.
+ */
 function toSMH(s) {
 	var days = Math.floor(s / 86400);
 	s%= 86400;
@@ -17,6 +20,7 @@ function toSMH(s) {
 			res = addTwoLast(values, measures, i);
 		}
 	}
+	
 	return res;
 }
 

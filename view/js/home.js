@@ -273,16 +273,25 @@ function htmlPost(post, userId) {
 
 	var distance = computeDistance(latitude, longitude, post.Location.Latitude, post.Location.Longitude) + " km";
 	var lastPosted = toSMH(((new Date().getTime()) - parseDate(post.CreationDate).getTime()) / 1000);
-
+	
 	var voteIcon = "glyphicon-arrow-up";
 
 	if (post.HasUserVoted == true) {
 		voteIcon = "glyphicon-ok";
 	}
 	
+	
 	var del = ""
 	if (post.Creator.UserId == userId) {
 		del = '<div id="delete_link' + post.PostId + '" class="pull-right small_text">delete this post</div>'
+	}
+	
+	// less than one minute
+	if(lastPosted == "") {
+		lastPosted += "just now";
+	}
+	else {
+		lastPosted += " ago";
 	}
 	
 	var s = 
