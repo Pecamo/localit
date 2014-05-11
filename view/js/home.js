@@ -1,6 +1,7 @@
 var userId=-1;
 var latitude;
 var longitude;
+var hasMessages = false;
 var states = {
 	local : 0,
 	regional : 1,
@@ -23,6 +24,7 @@ $(function () {
 			},
             function() {
             	console.log("Failed to get localization");
+            	displayIfNothing("Failed to get localization");
             },
             {enableHighAccuracy:true}
         );
@@ -92,22 +94,26 @@ function facebookConnected() {
  * @param {int} range Wanted max range of messages
  */
 function displayHome(latitude, longitude) {
+	displayIfNothing("Loading messages...");
 	console.log("Displaying Home page");
 	console.log("Loading posts...")
 	fetchPosts(userId, latitude, longitude, 0,
 		function(posts) {
 			if (posts == null) {
+				displayIfNothing("Received nothing.");
 				console.log("Received nothing.");
 			} else if (posts.length == 0) {
+				displayIfNothing("Received no message.");
 				console.log("Received no post.");
 			} else {
 				console.log(posts.length + " Posts received.");
+				hasMessages = true;
 				displayPosts(posts, userId);
 			}
 		},
 		function(error) {
+			displayIfNothing("Failed to receive posts.");
 			console.log("Failed to receive posts.");
-			alert(error);
 			displayErrorMessage(error);
 		});
 }
@@ -120,12 +126,22 @@ function displayHome(latitude, longitude) {
  * @param {int} range Wanted max range of messages
  */
 function displayRanged(latitude, longitude, range) {
+	displayIfNothing("Loading messages...");
 	console.log("Displaying Ranged page");
 	console.log("Loading posts...")
 	fetchPosts(userId, latitude, longitude, range,
 		function(posts) {
-			console.log("Posts received.");
-			displayPosts(posts, userId);
+			if (posts == null) {
+				displayIfNothing("Received nothing.");
+				console.log("Received nothing.");
+			} else if (posts.length == 0) {
+				displayIfNothing("Received no message.");
+				console.log("Received no post.");
+			} else {
+				console.log(posts.length + " Posts received.");
+				hasMessages = true;
+				displayPosts(posts, userId);
+			}
 		},
 		function(error) {
 			console.log("Failed to receive posts.");
@@ -338,4 +354,10 @@ function showVoted(postId) {
 	arrow = $($("#post"+postId+" .upvote-icon")[0]);
 	arrow.removeClass("glyphicon-arrow-up");
 	arrow.addClass("glyphicon-ok");
+}
+
+function displayIfNothing(message) {
+	if (!hasMessages) {
+        $("#main_content").html(message);
+    }
 }
