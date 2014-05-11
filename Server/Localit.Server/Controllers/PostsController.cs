@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.SqlServer;
 using System.Linq;
 using System.Net;
@@ -19,8 +20,10 @@ namespace Localit.Server.Controllers
 
         [HttpGet]
         [Route( "" )]
-        public IEnumerable<Post> GetPostsNear( [FromUri] double latitude, [FromUri] double longitude, [FromUri( Name = "range" )] double? optionalRange = null )
+        public IEnumerable<Post> GetPostsNear( [FromUri] double latitude, [FromUri] double longitude, [FromUri( Name = "range" )] double? optionalRange = null, [FromUri( Name = "userFacebookId" )] long? userFbId = null )
         {
+            IQueryable<Post> results;
+
             var stuff = from p in _context.Posts
                         let dlon = p.Location.Longitude - longitude
                         let dlat = p.Location.Latitude - latitude
@@ -34,30 +37,51 @@ namespace Localit.Server.Controllers
             {
                 double range = optionalRange.Value;
 
-                return from o in stuff
-                       where o.Distance <= 1.25 * range
-                       orderby new[] { (double) SqlFunctions.Cos( ( ( o.Distance - 50 ) * Math.PI / 2 ) / ( range / 4.0 ) ) * 0.5, 1 - ( 0.5 / range ) * o.Distance }.Min() * o.Post.Score
-                       select o.Post;
+                results = ( from o in stuff
+                            where o.Distance <= 1.25 * range
+                            orderby new[] { (double) SqlFunctions.Cos( ( ( o.Distance - 50 ) * Math.PI / 2 ) / ( range / 4.0 ) ) * 0.5, 1 - ( 0.5 / range ) * o.Distance }.Min() * o.Post.Score
+                            select o.Post ).Include( p => p.Creator );
+            }
+            else
+            {
+                var avgx = from o in stuff
+                           where o.Distance <= 10
+                           where o.Post.Score != null
+                           select o.Post.Score;
+
+
+                double avg = avgx.Any() ? avgx.Average() : 0;
+
+                results = ( from o in stuff
+                            let popFact = new[] { ( o.Post.Score / 2.0 * avg ) * 0.5, 0.5 }.Min()
+                            orderby SqlFunctions.Cos( o.Distance * Math.PI / 10 ) * ( 1 - popFact ) + popFact
+                            select o.Post ).Include( p => p.Creator );
             }
 
-            var avgx = from o in stuff
-                       where o.Distance <= 10
-                       where o.Post.Score != null
-                       select o.Post.Score;
+            if ( userFbId == null )
+            {
+                return results;
+            }
 
-            double avg = avgx.Any() ? avgx.Average() : 0;
+            var user = _context.Users.FirstOrDefault( u => u.FacebookId == userFbId );
+            if ( user == null )
+            {
+                throw new HttpResponseException( HttpStatusCode.BadRequest );
+            }
 
-            return from o in stuff
-                   let popFact = new[] { ( o.Post.Score / 2.0 * avg ) * 0.5, 0.5 }.Min()
-                   orderby SqlFunctions.Cos( o.Distance * Math.PI / 10 ) * ( 1 - popFact ) + popFact
-                   select o.Post;
+            var immRes = results.ToArray();
+            foreach ( var res in immRes )
+            {
+                res.HasUserVoted = _context.Votes.Any( v => v.UserId == user.UserId && v.PostId == res.PostId );
+            }
+            return immRes;
         }
 
         [HttpGet]
         [Route( "{id}" )]
         public Post GetPost( int id )
         {
-            var post = _context.Posts.FirstOrDefault( p => p.PostId == id );
+            var post = _context.Posts.Include( p => p.Creator ).FirstOrDefault( p => p.PostId == id );
             if ( post == null )
             {
                 throw new HttpResponseException( HttpStatusCode.BadRequest );
@@ -86,7 +110,8 @@ namespace Localit.Server.Controllers
                 Title = info.Title,
                 Creator = user,
                 Location = info.Location,
-                Score = 1
+                Score = 1,
+                CreationDate = DateTime.Now
             };
 
             post = _context.Posts.Add( post );

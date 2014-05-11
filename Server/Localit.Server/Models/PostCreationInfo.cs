@@ -5,6 +5,7 @@ namespace Localit.Server.Models
     {
         public long UserFacebookId { get; set; }
         public string Title { get; set; }
+        public string Content { get; set; }
         public Location Location { get; set; }
     }
 }
