@@ -297,10 +297,10 @@ function htmlPost(post, userId) {
 							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.PostId+'">' +
 									purify(post.Title) +
 							'</a>' +
-						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + distance + ')</span>' +
+						'<span class="small_text"> at '+ purify(post.Location.DisplayName) + ' (~' + distance + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
-						'by ' + post.Creator.Name + " - " + lastPosted + " ago" +
+						'by ' + purify(post.Creator.Name) + " - " + lastPosted + " ago" +
 					'</span>' +
 					del +
 				'</div>' +
@@ -315,7 +315,6 @@ function htmlPost(post, userId) {
 	return s;
 
 }
-
 
 function tryDelete(post, userId) {
 	if(post.Creator.UserId == userId) {
@@ -349,6 +348,21 @@ function upvote(postId) {
 }
 
 /**
+ * Unupvotes a post
+ * @param  {int} postId id of the post
+ * @param  {int} userId if of the upvoting user
+ */
+function cancelUpvote(postId) {
+	noMoreUpvote(postId, userId,
+		function() {
+			showDownvote(postId);
+		}),
+		function(response) {
+			displayErrorMessage(response);
+		}	
+}
+
+/**
  * Updates the local display with the upvote
  * @param  {int} postId id of the message to display the upvote
  */
@@ -359,6 +373,19 @@ function showUpvote(postId) {
 	votes = $($("#post"+postId+" .nbVotes")[0]);
 	number = votes.html();
 	votes.html(parseInt(number)+1);
+}
+
+/**
+ * Updates the local display with the downvote
+ * @param  {int} postId id of the message to display the upvote
+ */
+function showDownvote(postId) {
+	arrow = $($("#post"+postId+" .upvote-icon")[0]);
+	arrow.removeClass("glyphicon-ok");
+	arrow.addClass("glyphicon-arrow-up");
+	votes = $($("#post"+postId+" .nbVotes")[0]);
+	number = votes.html();
+	votes.html(parseInt(number)-1);
 }
 
 function showVoted(postId) {

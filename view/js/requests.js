@@ -90,6 +90,22 @@ function interestedInPost(postID, userID, successCallback, failCallback) {
 	httpPOST(posts_root + "/upvote", data, successCallback, failCallback);
 }
 
+/*
+ * Shows interest in a post on the server
+ * Parameters :
+ * - postID : id of the post
+ * - userID : id of the user who shows interest
+ * - failCallback : function called in case the communication fails
+ */
+function noMoreUpvote(postID, userID, successCallback, failCallback) {
+	var data = {
+		postID : postID,
+		userFacebookID : userID
+	};
+	httpDELETE(posts_root + "/upvote", data, successCallback, failCallback);
+}
+
+
 function logIn(userData,successCallback, failCallback){
 	httpPOST(api_root + "auth", userData, successCallback, failCallback);
 }
@@ -121,6 +137,26 @@ function httpPOST(url, data, successCallback, failCallback) {
 	$.ajax({
 		url: url,
 		type : 'POST',
+		data : data
+	})
+		.done(function(response) {
+			successCallback(response);
+		})
+		.fail(function(response) {
+			failCallback(response);
+		});
+}
+
+/*
+ * Performs a http DELETE to a url and sending data
+ * - url : url to perform the post
+ * - successCallback : function called in case of success
+ * - failCallback : function called in case of a fail
+ */
+function httpDELETE(url, data, successCallback, failCallback) {
+	$.ajax({
+		url: url,
+		type : 'DELETE',
 		data : data
 	})
 		.done(function(response) {
