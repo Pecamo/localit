@@ -34,3 +34,7 @@ div {
 .small_text {
 	font-size: 13px;
 }
+
+.fb-login-button {
+	margin-top: 12px;
+}

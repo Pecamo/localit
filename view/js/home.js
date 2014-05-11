@@ -176,10 +176,10 @@ function htmlPost(post, userId) {
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
 						'<div onclick="upvote('+post.PostIt+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
-						'<div class="nbVotes">' + post.score + '</div>' +
+						'<div class="nbVotes">' + post.Score + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
-							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.id+'">' +
+							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.PostId+'">' +
 									post.Title +
 							'</a>' +
 						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + locDiff + ')</span>' +
