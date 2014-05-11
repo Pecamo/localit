@@ -4,7 +4,7 @@ $(function () {
 			function(position) {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
-				range = 50;		// Get it from... we'll see later.
+				range = 0;		// Get it from... we'll see later.
 
 				userId = 2;
 				displayHome(userId, latitude, longitude, range);
@@ -124,9 +124,9 @@ function displayPosts(posts, userId) {
 	console.log("Posts displayed.");
 	$('#main_content').html(string);
 	for (var i = 0; i < posts.length; i++) {
-		$('#delete_link' + post.id).on('click', function () {
-			if(post.author == currentUser) {
-				deletePost(post)
+		$('#delete_link' + posts[i].id).on('click', function () {
+			if(posts[i].Creator == userId) {
+				deletePost(posts[i])
 			}
 			else {
 				alert("You are not allowed to do this.")
@@ -156,33 +156,33 @@ function htmlPost(post, userId) {
 	var lastPosted = "0 s"
 	
 	var del = ""
-	if(post.author == currentUser) {
+	if (post.Creator == currentUser) {
 		del = '<div id="delete_link' + post.id + '" class="pull-right small_text">delete this post</div>'
 	}
 	
 	var s = 
-		'<div id="post' + post.id + '" class="panel panel-default post">' +
+		'<div id="post' + post.PostIt + '" class="panel panel-default post">' +
 			'<div class="panel-heading">' +
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
-						'<div onclick="upvote('+post.id+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
-						'<div class="nbVotes">' + post.ups + '</div>' +
+						'<div onclick="upvote('+post.PostIt+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
+						'<div class="nbVotes">' + post.score + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
 							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.id+'">' +
-									post.title +
+									post.Title +
 							'</a>' +
-						'<span class="small_text"> at '+ post.location + ' (~' + locDiff + ')</span>' +
+						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + locDiff + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
-						'by ' + post.author + " - " + lastPosted + " ago" +
+						'by ' + post.Creator + " - " + lastPosted + " ago" +
 					'</span>' +
 					del +
 				'</div>' +
 			'</div>' +
-			'<div id="collapse' + post.id + '" class="panel-collapse collapse">' +
+			'<div id="collapse' + post.PostId + '" class="panel-collapse collapse">' +
 				'<div class="panel-body">' +
-					post.content +
+					post.Content +
 				'</div>' +
 			'</div>' +
 		'</div>';
