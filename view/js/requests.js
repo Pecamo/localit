@@ -10,6 +10,7 @@ var posts_root = api_root + "posts"
  */
 function fetchPosts(latitude, longitude, range, successCallback, failCallback) {
 	rangeString = "";
+	
 	if (range != 0) {
 		rangeString = "&range=" + range;
 	}
@@ -75,8 +76,8 @@ function interestedInPost(postID, userID, successCallback, failCallback) {
 	httpPOST(posts_root + "/upvote", data, successCallback, failCallback);
 }
 
-function logIn(id, name, successCallback, failCallback){
-	httpPOST(api_root + "auth", {FacebookId:id, Name:name}, successCallback, failCallback);
+function logIn(userData,successCallback, failCallback){
+	httpPOST(api_root + "auth", userData, successCallback, failCallback);
 }
 
 /*

@@ -4,39 +4,18 @@ $(function () {
 			function(position) {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
-				range = 50;		// Get it from... we'll see later.
+				range = 0;		// Get it from... we'll see later.
 
-				userId = 2;
+				userId = -1;
 				displayHome(userId, latitude, longitude, range);
-
-				//Test
-				for(var i = 0; i < 3; ++i) {
-					var post = new Array();
-					post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
-					$("#main_content").append(htmlPost(post));
-				}
-				// End Test
 			},
             function() {
-
+            	console.log("Failed to get localization");
             },
             {enableHighAccuracy:true}
         );
 	} else {
 		alert("Your browser does not support HTML5 geolocation.");
-	}
-
-	function successCallback(position){
-		latitude = position.coords.latitude;
-		longitude = position.coords.longitude;
-		range = 50;		// Get it from... we'll see later.
-
-		loadHome(latitude, longitude, range);
-		for(var i = 0; i < 3; ++i) {
-			var post = new Array();
-			post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
-			displayPost(post);
-		}
 	}
 
 	window.fbAsyncInit = function() {
@@ -59,23 +38,31 @@ $(function () {
 			}
 		});
     };
-		(function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/sdk.js";
-         fjs.parentNode.insertBefore(js, fjs);
+
+	(function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 })
 
 
 function facebookConnected() {
-	FB.api('/me', { fields: 'id, name' }, function(response){
+	FB.api('/me', { fields: 'id, name, link' }, function(response){
 		console.log(response);
 		if (response.error){
-			console.log("Logged out")
+			console.log("Logged out");
 		} else {
-			logIn(response.id, response.name, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
+			var userData = {
+				Name: response.name,
+				PictureUrl: 'http://graph.facebook.com/'+response.id+'/picture?type=square&height=32&width=32',
+				ProfileLink: response.link,
+				FacebookId: response.id
+			};
+
+			logIn(userData, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
 		}
 	});
 }
@@ -86,8 +73,36 @@ function facebookConnected() {
  * @param {float} longitude Longitude of user
  * @param {int} range Wanted max range of messages
  */
-function displayHome(userId, latitude, longitude, range) {
+function displayHome(userId, latitude, longitude) {
 	console.log("Displaying Home page");
+	console.log("Loading posts...")
+	fetchPosts(latitude, longitude, 0,
+		function(posts) {
+			if (posts == null) {
+				console.log("Recieved nothing.");
+			} else if (posts.length == 0) {
+				console.log("Recieved no post.");
+			} else {
+				console.log(posts.length + " Posts recieved.");
+				displayPosts(posts, userId);
+			}
+		},
+		function(error) {
+			console.log("Failed to recieve posts.");
+			alert(error);
+			displayErrorMessage(error);
+		});
+}
+
+/**
+ * Retrieves messags based on localization and range
+ * @param {float} latitude Latitude of user
+ * @param {float} longitude Longitude of user
+ * @param {float} range Max range in kilometers
+ * @param {int} range Wanted max range of messages
+ */
+function displayRanged(userId, latitude, longitude, range) {
+	console.log("Displaying Ranged page");
 	console.log("Loading posts...")
 	fetchPosts(latitude, longitude, range,
 		function(posts) {
@@ -136,9 +151,9 @@ function displayPosts(posts, userId) {
 	console.log("Posts displayed.");
 	$('#main_content').html(string);
 	for (var i = 0; i < posts.length; i++) {
-		$('#delete_link' + post.id).on('click', function () {
-			if(post.author == currentUser) {
-				deletePost(post)
+		$('#delete_link' + posts[i].id).on('click', function () {
+			if(posts[i].Creator == userId) {
+				deletePost(posts[i])
 			}
 			else {
 				alert("You are not allowed to do this.")
@@ -163,38 +178,37 @@ function displayErrorMessage(error) {
  */
 function htmlPost(post, userId) {
 	// todo
-	var currentUser = "The pouldre"
 	var locDiff = "0 km"
-	var lastPosted = "0 s"
+	var lastPosted = "0"
 	
 	var del = ""
-	if(post.author == currentUser) {
+	if (post.Creator.UserId == userId) {
 		del = '<div id="delete_link' + post.id + '" class="pull-right small_text">delete this post</div>'
 	}
 	
 	var s = 
-		'<div id="post' + post.id + '" class="panel panel-default post">' +
+		'<div id="post' + post.PostId + '" class="panel panel-default post">' +
 			'<div class="panel-heading">' +
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
-						'<div onclick="upvote('+post.id+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
-						'<div class="nbVotes">' + post.ups + '</div>' +
+						'<div onclick="upvote('+post.PostId+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
+						'<div class="nbVotes">' + post.Score + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
-							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.id+'">' +
-									post.title +
+							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.PostId+'">' +
+									post.Title +
 							'</a>' +
-						'<span class="small_text"> at '+ post.location + ' (~' + locDiff + ')</span>' +
+						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + locDiff + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
-						'by ' + post.author + " - " + lastPosted + " ago" +
+						'by ' + post.Creator.Name + " - " + toSMH(lastPosted) + " ago" +
 					'</span>' +
 					del +
 				'</div>' +
 			'</div>' +
-			'<div id="collapse' + post.id + '" class="panel-collapse collapse">' +
+			'<div id="collapse' + post.PostId + '" class="panel-collapse collapse">' +
 				'<div class="panel-body">' +
-					post.content +
+					post.Content +
 				'</div>' +
 			'</div>' +
 		'</div>';
@@ -203,9 +217,17 @@ function htmlPost(post, userId) {
 
 }
 
-function deletePost(post, userId) {
-	if(post.author == userId) {
-		deletePost(post)
+
+function tryDelete(post, userId) {
+	if(post.Creator.UserId == userId) {
+		deletePost(post,
+			function () {
+				alert("Post deleted with FNU ! ");
+			},
+			function () {
+				alert("Due to some shit happening, it didn't work.");
+			}
+		);
 	}
 	else {
 		alert("You are not allowed to do this.")
@@ -220,7 +242,6 @@ function deletePost(post, userId) {
 function upvote(postId, userId) {
 	interestedInPost(postId, userId,
 		function() {
-			alert("Fnupvoted !");
 			showUpvote(postId);
 		}),
 		function(response) {
