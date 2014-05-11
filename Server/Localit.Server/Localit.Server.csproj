@@ -93,11 +93,14 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\AuthInfo.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\PostCreationInfo.cs" />
+    <Compile Include="Models\PostDeleteInfo.cs" />
     <Compile Include="Models\UpvoteInfo.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Vote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -75,7 +75,7 @@ namespace Localit.Server.Controllers
                 throw new HttpResponseException( HttpStatusCode.BadRequest );
             }
 
-            var user = _context.Users.FirstOrDefault( u => u.Id == info.UserId );
+            var user = _context.Users.FirstOrDefault( u => u.FacebookId == info.UserFacebookId );
             if ( user == null )
             {
                 throw new HttpResponseException( HttpStatusCode.BadRequest );
@@ -86,24 +86,26 @@ namespace Localit.Server.Controllers
                 Title = info.Title,
                 Creator = user,
                 Location = info.Location,
-                InterestedUsers = new[] { user },
                 Score = 1
             };
 
-            _context.Posts.Add( post );
+            post = _context.Posts.Add( post );
+
+            var vote = new Vote
+            {
+                PostId = post.PostId,
+                UserId = user.UserId
+            };
+
+            _context.Votes.Add( vote );
+            _context.SaveChanges();
+
             return post;
         }
 
-        //[HttpPut]
-        //[Route( "update" )]
-        //public Post UpdatePost( [FromBody] Post post, [FromBody] int userId )
-        //{
-        //    throw new HttpResponseException( HttpStatusCode.NotImplemented );
-        //}
-
         [HttpPost]
         [Route( "upvote" )]
-        public Post UpvotePost( [FromBody] UpvoteInfo info )
+        public Post Upvote( [FromBody] UpvoteInfo info )
         {
             if ( info == null )
             {
@@ -111,19 +113,76 @@ namespace Localit.Server.Controllers
             }
 
             var post = _context.Posts.FirstOrDefault( p => p.PostId == info.PostId );
-            var user = _context.Users.FirstOrDefault( u => u.Id == info.UserId );
+            var user = _context.Users.FirstOrDefault( u => u.FacebookId == info.UserFacebookId );
             if ( post == null || user == null )
             {
                 throw new HttpResponseException( HttpStatusCode.BadRequest );
             }
 
-            if ( !post.InterestedUsers.Contains( user ) )
+            var vote = _context.Votes.FirstOrDefault( v => v.UserId == user.UserId && v.PostId == post.PostId );
+
+            if ( vote == null )
             {
-                post.InterestedUsers.Add( user );
+                vote = new Vote { UserId = user.UserId, PostId = post.PostId };
+                _context.Votes.Add( vote );
                 post.Score++;
+                _context.SaveChanges();
             }
 
             return post;
+        }
+
+        [HttpDelete]
+        [Route( "upvote" )]
+        public Post DeleteUpvote( [FromBody] UpvoteInfo info )
+        {
+            if ( info == null )
+            {
+                throw new HttpResponseException( HttpStatusCode.BadRequest );
+            }
+
+            var post = _context.Posts.FirstOrDefault( p => p.PostId == info.PostId );
+            var user = _context.Users.FirstOrDefault( u => u.FacebookId == info.UserFacebookId );
+            if ( post == null || user == null )
+            {
+                throw new HttpResponseException( HttpStatusCode.BadRequest );
+            }
+
+            var vote = _context.Votes.FirstOrDefault( v => v.UserId == user.UserId && v.PostId == post.PostId );
+
+            if ( vote != null )
+            {
+                _context.Votes.Remove( vote );
+                post.Score--;
+                _context.SaveChanges();
+            }
+
+            return post;
+        }
+
+        [HttpDelete]
+        [Route( "" )]
+        public void DeletePost( [FromBody] PostDeleteInfo info )
+        {
+            if ( info == null )
+            {
+                throw new HttpResponseException( HttpStatusCode.BadRequest );
+            }
+
+            var post = _context.Posts.FirstOrDefault( p => p.PostId == info.PostId );
+            var user = _context.Users.FirstOrDefault( u => u.FacebookId == info.UserFacebookId );
+            if ( post == null || user == null )
+            {
+                throw new HttpResponseException( HttpStatusCode.BadRequest );
+            }
+
+            if ( post.Creator != user )
+            {
+                throw new HttpResponseException( HttpStatusCode.BadRequest );
+            }
+
+            _context.Posts.Remove( post );
+            _context.SaveChanges();
         }
     }
 }

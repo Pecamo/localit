@@ -17,30 +17,26 @@ namespace Localit.Server
         {
             protected override void Seed( ApplicationDbContext context )
             {
+                var user = context.Users.Add( new User { FacebookId = 0, Name = "Santa" } );
+
                 var random = new Random();
                 for ( int n = 0; n < 1000; n++ )
                 {
-                    context.Posts.Add( new Post
+                    var post = context.Posts.Add( new Post
                     {
+                        PostId = n,
                         Title = "Random #" + n,
                         Score = n,
-                        Location = new Location { DisplayName = "Location #" + n, Latitude = random.NextDouble() * 180 - 90, Longitude = random.NextDouble() * 360 - 180 }
+                        Location = new Location { DisplayName = "Location #" + n, Latitude = random.NextDouble() * 180 - 90, Longitude = random.NextDouble() * 360 - 180 },
+                        Creator = user
+                    } );
+
+                    context.Votes.Add( new Vote
+                    {
+                        UserId = user.UserId,
+                        PostId = post.PostId
                     } );
                 }
-
-                context.Posts.Add( new Post
-                {
-                    Title = "Another test",
-                    Score = 10000,
-                    Location = new Location { DisplayName = "Somewhere over the rainbow", Latitude = 80, Longitude = 20 }
-                } );
-
-                context.Posts.Add( new Post
-                {
-                    Title = "Come help Santa!",
-                    Score = 99,
-                    Location = new Location { DisplayName = "North Pole", Latitude = 90, Longitude = 0 }
-                } );
             }
         }
     }

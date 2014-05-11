@@ -1,9 +1,9 @@
 ﻿
 namespace Localit.Server.Models
 {
-    public class UpvoteInfo
+    public class PostDeleteInfo
     {
-        public long UserFacebookId { get; set; }
         public int PostId { get; set; }
+        public long UserFacebookId { get; set; }
     }
 }
