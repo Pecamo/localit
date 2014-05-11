@@ -22,9 +22,9 @@ function toSMH(s) {
 
 function addTwoLast(values, measures, i) {
 	var res = "";
-	res += (values[i] + measures[i]);
+	res += (Math.round(values[i]) + measures[i]);
 	if(values[i+1] > 0) {
-		res += (" " + values[i+1] + measures[i+1]);
+		res += (" " + Math.round(values[i+1]) + measures[i+1]);
 	}
 	return res;
 }

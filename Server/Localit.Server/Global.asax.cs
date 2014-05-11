@@ -27,7 +27,7 @@ namespace Localit.Server
                     {
                         PostId = n,
                         Title = "Random #" + n,
-                        Content = string.Join( " ", Enumerable.Repeat( "Lorem ipsum dolor sit amet.", n / 10 + 1 ) ),
+                        Content = string.Join( " ", Enumerable.Repeat( "Lorem ipsum dolor sit amet.\r\n", n / 300 + 1 ) ),
                         Score = n / 2,
                         Location = new Location { DisplayName = "Location #" + n, Latitude = random.NextDouble() * 180 - 90, Longitude = random.NextDouble() * 360 - 180 },
                         Creator = user,

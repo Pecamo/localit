@@ -41,16 +41,16 @@ function getPost(id, successCallback, failCallback) {
  */
 function addPost(userId, title, content, latitude, longitude, displayname, successCallback, failCallback) {
 	var data = {
-		userFacebookID : userID,
-		Title : post.Title,
-		Content : post.Content,
+		UserFacebookID : userId,
+		Title : title,
+		Content : content,
 		Location : {
 			Latitude : latitude,
 			Longitude : longitude,
 			DisplayName : displayname
 		}
 	};
-	httpPOST(posts_root + "/add", post, successCallback, failCallback);
+	httpPOST(posts_root + "/add", data, successCallback, failCallback);
 }
 
 /*

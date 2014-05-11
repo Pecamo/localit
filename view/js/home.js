@@ -1,6 +1,14 @@
 var userId=-1;
 var latitude;
 var longitude;
+var states = {
+	local : 0,
+	regional : 1,
+	submit : 2
+}
+
+var state = states.local;
+
 $(function () {
 	if (navigator.geolocation){
 		var watchId = navigator.geolocation.watchPosition(
@@ -9,7 +17,9 @@ $(function () {
 				longitude = position.coords.longitude;
 				range = 0;		// Get it from... we'll see later.
 				console.log("got new position")
-				displayHome(latitude, longitude, range);
+				if(state === states.local){
+					displayHome(latitude, longitude, range);
+				}
 			},
             function() {
             	console.log("Failed to get localization");
@@ -56,6 +66,7 @@ function facebookConnected() {
 		console.log(response);
 		if (response.error){
 			userId = -1;
+			backHome();
 			console.log("Logged out");
 		} else {
 			var userData = {
@@ -67,7 +78,9 @@ function facebookConnected() {
 
 			logIn(userData, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
 			userId = response.id;
-			displayHome(latitude, longitude, range);
+			if(state === 0){
+				displayHome(latitude, longitude, range);
+			}
 		}
 	});
 }
@@ -124,21 +137,65 @@ function displayRanged(latitude, longitude, range) {
 /**
  * Displays the Message page
  */
-function displayNewMessage(userId) {
-	console.log("Displaying Message Page");
-	s = 
-	"<form role='form'>" + 
-	  "<div class='form-group'>" + 
-	    "<label for='title'>Title</label>" + 
-	    "<input type='text' class='form-control' id='title' placeholder='Title of your message'>" + 
-	  "</div>" + 
-	  "<div class='form-group'>" + 
-	    "<label for='message'>Password</label>" + 
-	    "<textarea class='form-control' id='message' placeholder='Your message' rows='3'></textarea>" + 
-	  "</div>" + 
-	  "<button type='submit' class='btn btn-default'>Submit</button>" + 
-	"</form>";
-	$('#main_content').html(s);
+function displayNewMessage() {
+	if(userId != -1){
+		state = states.submit;
+		console.log("Displaying Message Page");
+		s = 
+		"<form role='form'>" + 
+		  "<div class='form-group'>" + 
+		    "<label for='title'>Title</label>" + 
+		    "<input type='text' class='form-control' id='title' placeholder='Title of your message'>" + 
+		  "</div>" + 
+		  "<div class='form-group'>" + 
+		    "<label for='message'>Content</label>" + 
+		    "<textarea class='form-control' id='message' placeholder='Your message' rows='3'></textarea>" + 
+		  "</div>" + 
+		  "<button type='submit' class='btn btn-default' onclick='submitPost()'>Submit</button>" + 
+		"</form>";
+		$('#main_content').html(s);
+		$('#newPost').addClass("active");
+		$("#regio").removeClass("active");
+		$("#loc").removeClass("active");
+	} else {
+		alert("You are not logged in !");
+	} 
+}
+
+function submitPost() {
+	if(userId != -1){
+		console.log("OK");
+
+		var loc = new google.maps.LatLng(latitude, longitude);
+		var map = new google.maps.Map(document.getElementById('map'), {
+      		center: loc,
+      		zoom: 15
+    	});
+    	var request = {
+    		location: loc,
+    		radius: '10',
+  		};
+  		var service = new google.maps.places.PlacesService(map);
+  		service.nearbySearch(request, function (results, status){
+  			if (status == google.maps.places.PlacesServiceStatus.OK) {
+  				console.log(results);
+				addPost(userId,$("#title").val(),$("#message").val(),latitude,longitude,results[0].name, function(response){backHome();}, function(response){alert(response);backHome();})
+  			} else {
+  				alert("google maps problem !")
+  				backHome();
+  			}
+  		});
+	} else {
+		alert("You are not logged in !")
+	}
+}
+
+function backHome() {
+	displayHome(userId, latitude, longitude, range);
+	$('#newPost').removeClass("active");
+	$("#regio").removeClass("active");
+	$("#loc").addClass("active");
+	state = states.local;
 }
 
 /**
@@ -185,9 +242,11 @@ function displayErrorMessage(error) {
  * @return {String} HTML to display a post
  */
 function htmlPost(post, userId) {
-	// todo
-	var distance = computeDistance(latitude, longitude, post.Location.Latitude, post.Location.Longitude) + " km"
-	var lastPosted = "0"
+
+	var distance = computeDistance(latitude, longitude, post.Location.Latitude, post.Location.Longitude) + " km";
+	var lastPosted = toSMH(((new Date().getTime()) - Date.parse(post.CreationDate)) / 1000);
+
+
 	var voteIcon = "glyphicon-arrow-up";
 
 	if (post.HasUserVoted == true) {
@@ -214,7 +273,7 @@ function htmlPost(post, userId) {
 						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + distance + ')</span>' +
 					'</div>' +
 					'<span class="post_second_line small_text">' +
-						'by ' + post.Creator.Name + " - " + toSMH(lastPosted) + " ago" +
+						'by ' + post.Creator.Name + " - " + lastPosted + " ago" +
 					'</span>' +
 					del +
 				'</div>' +
