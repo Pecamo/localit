@@ -164,6 +164,9 @@ function displayPosts(posts, userId) {
 				alert("You are not allowed to do this.")
 			}
 		})
+		if (posts[i].HasUserVoted == true) {
+			showUpVote(posts[i].PostId);
+		}
 	}
 
 }
@@ -244,7 +247,7 @@ function tryDelete(post, userId) {
  * @param  {int} postId id of the post
  * @param  {int} userId if of the upvoting user
  */
-function upvote(postId, userId) {
+function upvote(postId) {
 	interestedInPost(postId, userId,
 		function() {
 			showUpvote(postId);
