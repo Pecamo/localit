@@ -26,19 +26,6 @@ $(function () {
 		alert("Your browser does not support HTML5 geolocation.");
 	}
 
-	function successCallback(position){
-		latitude = position.coords.latitude;
-		longitude = position.coords.longitude;
-		range = 50;		// Get it from... we'll see later.
-
-		loadHome(latitude, longitude, range);
-		for(var i = 0; i < 3; ++i) {
-			var post = new Array();
-			post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
-			displayPost(post);
-		}
-	}
-
 	window.fbAsyncInit = function() {
 		FB.init({
 	  		appId      : '569948019785822',
@@ -59,12 +46,13 @@ $(function () {
 			}
 		});
     };
-		(function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/sdk.js";
-         fjs.parentNode.insertBefore(js, fjs);
+
+	(function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 })
 
@@ -203,9 +191,17 @@ function htmlPost(post, userId) {
 
 }
 
-function deletePost(post, userId) {
+
+function tryDelete(post, userId) {
 	if(post.author == userId) {
-		deletePost(post)
+		deletePost(post,
+			function () {
+				alert("Post deleted with FNU ! ");
+			},
+			function () {
+				alert("Due to some shit happening, it didn't work.");
+			}
+		);
 	}
 	else {
 		alert("You are not allowed to do this.")
