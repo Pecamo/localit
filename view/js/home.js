@@ -179,17 +179,7 @@ function submitPost() {
   		service.nearbySearch(request, function (results, status){
   			if (status == google.maps.places.PlacesServiceStatus.OK) {
   				console.log(results);
-				var post = {
-			    	UserFacebookId: userId,
-			    	Title: $("title").val(),
-			    	Content: $("message").val(),
-			    	Location: {
-			        	Latitude: latitude,
-			        	Longitude: longitude,
-			        	DisplayName: results[0].name
-			    	}
-				}
-				addPost(post, function(response){backHome();}, function(response){alert(response);backHome();})
+				addPost(userId,$("#title").val(),$("#message").val(),latitude,longitude,results[0].name, function(response){backHome();}, function(response){alert(response);backHome();})
   			} else {
   				alert("google maps problem !")
   				backHome();
