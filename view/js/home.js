@@ -19,7 +19,9 @@ $(function () {
 				range = 0;		// Get it from... we'll see later.
 				console.log("got new position")
 				if(state === states.local){
-					displayHome(latitude, longitude, range);
+					displayHome(latitude, longitude);
+				} else if (state === states.regional){
+					displayRanged(latitude, longitude, range);
 				}
 			},
             function() {
@@ -81,7 +83,9 @@ function facebookConnected() {
 			logIn(userData, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
 			userId = response.id;
 			if(state === 0){
-				displayHome(latitude, longitude, range);
+				displayHome(latitude, longitude);
+			} else if (state === 1){
+				displayRanged(latitude, longitude, range);
 			}
 		}
 	});
@@ -214,6 +218,14 @@ function backHome() {
 	state = states.local;
 }
 
+function backRanged() {
+	displayRanged(userId, latitude, longitude, 5);
+	$('#newPost').removeClass("active");
+	$("#regio").removeClass("active");
+	$("#loc").addClass("active");
+	state = states.regional;
+}
+
 /**
  * Displays all received posts
  * @param  {Array} posts Posts
@@ -283,7 +295,7 @@ function htmlPost(post, userId) {
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
 							'<a class="post_title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+post.PostId+'">' +
-									post.Title +
+									purify(post.Title) +
 							'</a>' +
 						'<span class="small_text"> at '+ post.Location.DisplayName + ' (~' + distance + ')</span>' +
 					'</div>' +
@@ -295,7 +307,7 @@ function htmlPost(post, userId) {
 			'</div>' +
 			'<div id="collapse' + post.PostId + '" class="panel-collapse collapse">' +
 				'<div class="panel-body">' +
-					post.Content +
+					purify(post.Content) +
 				'</div>' +
 			'</div>' +
 		'</div>';
@@ -359,4 +371,8 @@ function displayIfNothing(message) {
 	if (!hasMessages) {
         $("#main_content").html(message);
     }
+}
+
+function purify(string) {
+	return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;").replace("'", "&#x27;").replace("\/", "&#x2F;");
 }
