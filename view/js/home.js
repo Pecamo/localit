@@ -298,6 +298,12 @@ function htmlPost(post, userId) {
 		del = '<div id="delete_link' + post.PostId + '" class="pull-right small_text">delete this post</div>'
 	}
 
+	if (post.Title === null) {
+		post.Title = "untitled";
+	}
+	if (post.Content === null) {
+		post.Content = "";
+	}
 	
 	// less than one minute
 	if(lastPosted == "") {
