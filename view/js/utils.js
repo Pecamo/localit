@@ -42,3 +42,10 @@ function computeDistance(lat1, lon1, lat2, lon2) {
 	var d = R * c;
 	return Math.round(d * 10) / 10;
 }
+
+function parseDate(s) {
+	var parts = s.split('T');
+	var YMD = parts[0].split('-');
+	var HMS = parts[1].split(':');
+	return new Date(YMD[0], YMD[1]-1, YMD[2], HMS[0], HMS[1], HMS[2]);
+}

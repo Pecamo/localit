@@ -244,7 +244,7 @@ function displayErrorMessage(error) {
 function htmlPost(post, userId) {
 
 	var distance = computeDistance(latitude, longitude, post.Location.Latitude, post.Location.Longitude) + " km";
-	var lastPosted = toSMH(((new Date().getTime()) - Date.parse(post.CreationDate)) / 1000);
+	var lastPosted = toSMH(((new Date().getTime()) - parseDate(post.CreationDate).getDate()) / 1000);
 
 
 	var voteIcon = "glyphicon-arrow-up";
