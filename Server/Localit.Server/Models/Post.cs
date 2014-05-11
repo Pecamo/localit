@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 namespace Localit.Server.Models
 {
     public class Post
@@ -7,7 +8,7 @@ namespace Localit.Server.Models
         public string Title { get; set; }
         public Location Location { get; set; }
         public int Score { get; set; }
-        //public ApplicationUser Creator { get; set; }
-        //public ICollection<ApplicationUser> InterestedUsers { get; set; }
+        public User Creator { get; set; }
+        public ICollection<User> InterestedUsers { get; set; }
     }
 }

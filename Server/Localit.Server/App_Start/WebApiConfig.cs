@@ -1,5 +1,4 @@
 ﻿using System.Web.Http;
-using Microsoft.Owin.Security.OAuth;
 
 namespace Localit.Server
 {
@@ -10,20 +9,11 @@ namespace Localit.Server
             var formatters = GlobalConfiguration.Configuration.Formatters;
             formatters.Remove( formatters.XmlFormatter );
 
-            // Web API configuration and services
-            // Configure Web API to use only bearer token authentication.
-            config.SuppressDefaultHostAuthentication();
-            config.Filters.Add( new HostAuthenticationFilter( OAuthDefaults.AuthenticationType ) );
             config.EnableCors();
 
             // Web API routes
             config.MapHttpAttributeRoutes();
 
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
         }
     }
 }
