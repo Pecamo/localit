@@ -272,6 +272,10 @@ function htmlPost(post, userId) {
 
 	if (post.HasUserVoted == true) {
 		voteIcon = "glyphicon-ok";
+		actionIcon = 'cancelUpvote('+post.PostId+', '+userId+')';
+	} else {
+		voteIcon = "glyphicon-arrow-up";
+		actionIcon = 'upvote('+post.PostId+', '+userId+')';
 	}
 	
 	
@@ -279,6 +283,7 @@ function htmlPost(post, userId) {
 	if (post.Creator.UserId == userId) {
 		del = '<div id="delete_link' + post.PostId + '" class="pull-right small_text">delete this post</div>'
 	}
+
 	
 	// less than one minute
 	if(lastPosted == "") {
@@ -293,7 +298,7 @@ function htmlPost(post, userId) {
 			'<div class="panel-heading">' +
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
-						'<div onclick="upvote('+post.PostId+', '+userId+')" class="glyphicon ' + voteIcon + ' upvote-icon"></div>' +
+						'<div onclick="' + actionIcon + '" class="glyphicon ' + voteIcon + ' upvote-icon"></div>' +
 						'<div class="nbVotes">' + post.Score + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
@@ -341,11 +346,16 @@ function tryDelete(post, userId) {
  * @param  {int} userId if of the upvoting user
  */
 function upvote(postId) {
+	arrow = $($("#post"+postId+" .upvote-icon")[0]);
+	arrow.attr('onclick','').unbind('click');
 	interestedInPost(postId, userId,
 		function() {
 			showUpvote(postId);
 		}),
 		function(response) {
+			arrow.click(function () {
+				upvote(postId, userId);
+			});
 			console.log(response);
 		}
 }
@@ -356,12 +366,17 @@ function upvote(postId) {
  * @param  {int} userId if of the upvoting user
  */
 function cancelUpvote(postId) {
+	arrow = $($("#post"+postId+" .upvote-icon")[0]);
+	arrow.attr('onclick','').unbind('click');
 	noMoreUpvote(postId, userId,
 		function() {
 			showDownvote(postId);
 		}),
 		function(response) {
-			displayErrorMessage(response);
+			arrow.click(function () {
+				cancelUpvote(postId, userId);
+			});
+			console.log(response);
 		}	
 }
 
@@ -373,6 +388,10 @@ function showUpvote(postId) {
 	arrow = $($("#post"+postId+" .upvote-icon")[0]);
 	arrow.removeClass("glyphicon-arrow-up");
 	arrow.addClass("glyphicon-ok");
+	arrow.attr('onclick','').unbind('click');
+	arrow.click(function () {
+		cancelUpvote(postId, userId);
+	});
 	votes = $($("#post"+postId+" .nbVotes")[0]);
 	number = votes.html();
 	votes.html(parseInt(number)+1);
@@ -386,6 +405,9 @@ function showDownvote(postId) {
 	arrow = $($("#post"+postId+" .upvote-icon")[0]);
 	arrow.removeClass("glyphicon-ok");
 	arrow.addClass("glyphicon-arrow-up");
+	arrow.click(function () {
+		upvote(postId, userId);
+	});
 	votes = $($("#post"+postId+" .nbVotes")[0]);
 	number = votes.html();
 	votes.html(parseInt(number)-1);
@@ -395,6 +417,10 @@ function showVoted(postId) {
 	arrow = $($("#post"+postId+" .upvote-icon")[0]);
 	arrow.removeClass("glyphicon-arrow-up");
 	arrow.addClass("glyphicon-ok");
+	arrow.click(function () {
+		console.log("SALUT");
+		cancelUpvote(postId, userId);
+	});
 }
 
 function displayIfNothing(message) {
