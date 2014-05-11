@@ -1,4 +1,4 @@
-xvar userId=-1;
+var userId=-1;
 var latitude;
 var longitude;
 $(function () {
