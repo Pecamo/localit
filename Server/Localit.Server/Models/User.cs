@@ -1,5 +1,6 @@
 ﻿
 using Newtonsoft.Json;
+
 namespace Localit.Server.Models
 {
     public class User

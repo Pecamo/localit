@@ -13,7 +13,6 @@ namespace Localit.Server
 
             // Web API routes
             config.MapHttpAttributeRoutes();
-
         }
     }
 }
