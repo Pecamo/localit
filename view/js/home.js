@@ -1,12 +1,31 @@
 $(function () {
 	if (navigator.geolocation){
-		var watchId = navigator.geolocation.watchPosition(successCallback,
-                            null,
-                            {enableHighAccuracy:true});
+		var watchId = navigator.geolocation.watchPosition(
+			function(position) {
+				latitude = position.coords.latitude;
+				longitude = position.coords.longitude;
+				range = 50;		// Get it from... we'll see later.
+
+				userId = 2;
+				displayHome(userId, latitude, longitude, range);
+
+				//Test
+				for(var i = 0; i < 3; ++i) {
+					var post = new Array();
+					post = {"id": i, "ups": 0, "title": "Post title", "content": "Post content", "location": "EPFL", "author": "The pouldre"};
+					$("#main_content").append(htmlPost(post));
+				}
+				// End Test
+			},
+            function() {
+
+            },
+            {enableHighAccuracy:true}
+        );
 	} else {
 		alert("Your browser does not support HTML5 geolocation.");
 	}
-	
+
 	function successCallback(position){
 		latitude = position.coords.latitude;
 		longitude = position.coords.longitude;
@@ -19,7 +38,47 @@ $(function () {
 			displayPost(post);
 		}
 	}
+
+	window.fbAsyncInit = function() {
+		FB.init({
+	  		appId      : '569948019785822',
+	  		xfbml      : true,
+	  		version    : 'v2.0'
+		});
+		FB.getLoginStatus(function(response) {
+			console.log("getLoginStatus")
+			if (response.status === 'connected') {
+				facebookConnected();
+			}
+			else if (response.status === 'not_authorized') {
+				// the user is logged in to Facebook, 
+				// but has not authenticated your app
+			}
+			else {
+				// the user isn't logged in to Facebook.
+			}
+		});
+    };
+		(function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 })
+
+
+function facebookConnected() {
+	FB.api('/me', { fields: 'id, name' }, function(response){
+		console.log(response);
+		if (response.error){
+			console.log("Logged out")
+		} else {
+			logIn(response.id, response.name, function(){console.log("Auth OK");}, function(){console.log("Auth not OK");});
+		}
+	});
+}
 
 /**
  * Retrieves messages based on mode and localization
@@ -27,13 +86,13 @@ $(function () {
  * @param {float} longitude Longitude of user
  * @param {int} range Wanted max range of messages
  */
-function loadHome(latitude, longitude, range) {
+function displayHome(userId, latitude, longitude, range) {
 	console.log("Displaying Home page");
 	console.log("Loading posts...")
-	getPosts(latitude, longitude, range,
+	fetchPosts(latitude, longitude, range,
 		function(posts) {
 			console.log("Posts recieved.");
-			displayPosts(posts);
+			displayPosts(posts, userId);
 		},
 		function(error) {
 			console.log("Failed to recieve posts.");
@@ -44,26 +103,49 @@ function loadHome(latitude, longitude, range) {
 
 /**
  * Displays the Message page
- * @param {float} latitude Latitude of user
- * @param {float} longitude Longitude of user
- * @param {int} range Wanted max range of messages
- * @return {Array} Messages in decreasing relevance order
  */
-function loadNewMessage() {
+function displayNewMessage(userId) {
 	console.log("Displaying Message Page");
-	s = "";
-	$('.posts_container').html(s);
+	s = 
+	"<form role='form'>" + 
+	  "<div class='form-group'>" + 
+	    "<label for='title'>Title</label>" + 
+	    "<input type='text' class='form-control' id='title' placeholder='Title of your message'>" + 
+	  "</div>" + 
+	  "<div class='form-group'>" + 
+	    "<label for='message'>Password</label>" + 
+	    "<textarea class='form-control' id='message' placeholder='Your message' rows='3'></textarea>" + 
+	  "</div>" + 
+	  "<button type='submit' class='btn btn-default'>Submit</button>" + 
+	"</form>";
+	$('#main_content').html(s);
 }
 
 /**
  * Displays all received posts
  * @param  {Array} posts Posts
+ * @param {int} userId id of connectred user
  */
-function displayPosts(posts) {
+function displayPosts(posts, userId) {
+	string = '<div class="posts_container panel-group" id="accordion">';
 	for(var i = 0; i < posts.length; i++){
-		displayPost(posts[i]);
+		string += htmlPost(posts[i], userId);
 	}
+	string += "</div>";
+
 	console.log("Posts displayed.");
+	$('#main_content').html(string);
+	for (var i = 0; i < posts.length; i++) {
+		$('#delete_link' + post.id).on('click', function () {
+			if(post.author == currentUser) {
+				deletePost(post)
+			}
+			else {
+				alert("You are not allowed to do this.")
+			}
+		})
+	}
+
 }
 
 /**
@@ -75,20 +157,27 @@ function displayErrorMessage(error) {
 }
 
 /**
- * Displays a post
- * @param  {Array} post Post
+ * Returns the HTLM to display a post
+ * @param  {Array} post Post Object
+ * @return {String} HTML to display a post
  */
-function displayPost(post) {
+function htmlPost(post, userId) {
 	// todo
+	var currentUser = "The pouldre"
 	var locDiff = "0 km"
 	var lastPosted = "0 s"
+	
+	var del = ""
+	if(post.author == currentUser) {
+		del = '<div id="delete_link' + post.id + '" class="pull-right small_text">delete this post</div>'
+	}
 	
 	var s = 
 		'<div id="post' + post.id + '" class="panel panel-default post">' +
 			'<div class="panel-heading">' +
 				'<div class="post_header">' +
 					'<div class="ups pull-left">' + 
-						'<div onclick="upvote()" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
+						'<div onclick="upvote('+post.id+', '+userId+')" class="glyphicon glyphicon-arrow-up upvote-icon"></div>' +
 						'<div class="nbVotes">' + post.ups + '</div>' +
 					'</div>' +
 					'<div class=" post_first_line panel-title">' +
@@ -100,17 +189,27 @@ function displayPost(post) {
 					'<span class="post_second_line small_text">' +
 						'by ' + post.author + " - " + lastPosted + " ago" +
 					'</span>' +
+					del +
 				'</div>' +
-				
 			'</div>' +
 			'<div id="collapse' + post.id + '" class="panel-collapse collapse">' +
 				'<div class="panel-body">' +
 					post.content +
 				'</div>' +
 			'</div>' +
-		'</div>'
+		'</div>';
 
-	$('.posts_container').append(s);
+	return s;
+
+}
+
+function deletePost(post, userId) {
+	if(post.author == userId) {
+		deletePost(post)
+	}
+	else {
+		alert("You are not allowed to do this.")
+	}
 }
 
 /**
@@ -122,7 +221,7 @@ function upvote(postId, userId) {
 	interestedInPost(postId, userId,
 		function() {
 			alert("Fnupvoted !");
-			showUpVote(postId);
+			showUpvote(postId);
 		}),
 		function(response) {
 			displayErrorMessage(response);
@@ -133,7 +232,7 @@ function upvote(postId, userId) {
  * Updates the local display with the upvote
  * @param  {int} postId id of the message to display the upvote
  */
-function showUpVote(postId) {
+function showUpvote(postId) {
 	arrow = $($("#post"+postId+" .upvote-icon")[0]);
 	arrow.removeClass("glyphicon-arrow-up");
 	arrow.addClass("glyphicon-ok");

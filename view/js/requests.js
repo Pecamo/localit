@@ -8,7 +8,7 @@ var posts_root = api_root + "posts"
  * - successCallback : function called in case of a success, must take an array of objects as argument 
  * - failCallback : function called in case the communication fails
  */
-function getPosts(latitude, longitude, range, successCallback, failCallback) {
+function fetchPosts(latitude, longitude, range, successCallback, failCallback) {
 	rangeString = "";
 	if (range != 0) {
 		rangeString = "&range=" + range;
@@ -49,6 +49,17 @@ function updatePost(post, successCallback, failCallback) {
 	httpPOST(posts_root + "/update", post, successCallback, failCallback);
 }
 
+/**
+ * Delete a post on the server
+ * Parameters :
+ * - post : the post to be updated (HAS TO CONTAIN ID)
+ * - successCallback : function called in case of a success
+ * - failCallback : function called in case the communication fails
+ */
+function deletePost(post, successCallback, failCallback) {
+	httpPOST(posts_root + "/delete", post, successCallback, failCallback);
+}
+
 /*
  * Shows interest in a post on the server
  * Parameters :
@@ -62,6 +73,10 @@ function interestedInPost(postID, userID, successCallback, failCallback) {
 		userID : userID
 	};
 	httpPOST(posts_root + "/upvote", data, successCallback, failCallback);
+}
+
+function logIn(id, name, successCallback, failCallback){
+	httpPOST(api_root + "auth", {FacebookId:id, Name:name}, successCallback, failCallback);
 }
 
 /*
