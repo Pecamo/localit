@@ -1,4 +1,4 @@
-var api_root = "http://128.179.130.155:8888/api/"
+var api_root = "http://localit.protectator.ch:8888/api/"
 var posts_root = api_root + "posts"
 /*
  * Gets all the posts near the location of the client.
